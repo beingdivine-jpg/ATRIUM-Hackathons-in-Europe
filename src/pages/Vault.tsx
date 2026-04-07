@@ -6,7 +6,7 @@ import { useAuthReady } from '@/hooks/useAuthReady';
 import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Archive, ExternalLink, LogOut, Star, Zap } from 'lucide-react';
+import { Check, Archive, ExternalLink, LogOut, Star, Zap, Shield, Info } from 'lucide-react';
 
 type ExhibitionStatus = 'pending' | 'published' | 'archived';
 type CompetitionFormat = 'hackathon' | 'buildathon' | 'innovation_challenge';
@@ -27,6 +27,8 @@ interface Competition {
   provenance_link: string | null;
   format_type: CompetitionFormat;
   status: ExhibitionStatus;
+  source_signal: string | null;
+  is_remote: boolean | null;
   created_at: string;
   updated_at: string;
 }
@@ -59,7 +61,7 @@ const Vault = () => {
         .eq('status', tab)
         .order('created_at', { ascending: false });
       if (error) throw error;
-      return (data ?? []) as Competition[];
+      return (data ?? []) as unknown as Competition[];
     },
     enabled: isReady && !!user && isAdmin === true,
   });
@@ -87,6 +89,17 @@ const Vault = () => {
     }
     return list;
   }, [rawCompetitions, formatFilter, prestigeOnly]);
+
+  // Group by source_signal
+  const groupedCompetitions = useMemo(() => {
+    const groups: Record<string, Competition[]> = {};
+    for (const c of competitions) {
+      const source = c.source_signal || 'manual';
+      if (!groups[source]) groups[source] = [];
+      groups[source].push(c);
+    }
+    return groups;
+  }, [competitions]);
 
   const updateStatus = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: ExhibitionStatus }) => {
@@ -132,6 +145,15 @@ const Vault = () => {
     { key: 'archived', label: 'Archived' },
   ];
 
+  const sourceLabels: Record<string, string> = {
+    manual: 'Manual Entry',
+    unknown: 'Unknown Source',
+    linkedin: 'via LinkedIn',
+    luma: 'via Luma',
+    devpost: 'via Devpost',
+    eventbrite: 'via Eventbrite',
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
@@ -150,6 +172,20 @@ const Vault = () => {
           Sign Out
         </button>
       </header>
+
+      {/* Handshake Configuration Notice */}
+      <div className="mx-8 mb-4 flex items-start gap-3 rounded-xl border border-primary/20 bg-primary/5 p-4 backdrop-blur-xl">
+        <Shield className="mt-0.5 h-5 w-5 shrink-0 text-primary" strokeWidth={1.5} />
+        <div>
+          <p className="text-sm font-medium text-foreground">Handshake Configuration</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Ensure <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[11px]">HARVESTER_SECRET</code> is set in{' '}
+            <span className="font-medium text-foreground">Cloud → Secrets</span>. Your GitHub Actions harvester must send this
+            value as the <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[11px]">X-Atrium-Handshake</code> header
+            to authenticate with the ingest-signal function.
+          </p>
+        </div>
+      </div>
 
       {/* Tabs */}
       <div className="px-8">
@@ -177,7 +213,6 @@ const Vault = () => {
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3 px-8 pt-4">
-        {/* Format filter */}
         <div className="flex gap-1 rounded-full border border-border/30 bg-card/40 p-1 backdrop-blur-xl">
           {([
             { key: 'all' as const, label: 'All Types' },
@@ -199,7 +234,6 @@ const Vault = () => {
           ))}
         </div>
 
-        {/* Prestige filter */}
         <button
           onClick={() => setPrestigeOnly(!prestigeOnly)}
           className={`flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-medium transition-all duration-300 ${
@@ -213,125 +247,144 @@ const Vault = () => {
         </button>
       </div>
 
-      {/* Competition Queue */}
+      {/* Competition Queue — grouped by source */}
       <section className="mx-auto max-w-4xl px-4 py-10">
-        <div className="flex flex-col gap-6">
-          {isLoading ? (
-            <p className="py-20 text-center font-mono text-sm text-muted-foreground">Loading competitions…</p>
-          ) : competitions.length === 0 ? (
-            <p className="py-20 text-center text-lg text-muted-foreground">
-              No {tab} competitions in The Vault.
-            </p>
-          ) : (
-            <AnimatePresence mode="popLayout">
-              {competitions.map((c) => {
-                const isTier1 = parsePrize(c.reward_pool) >= 30000;
-                return (
-                  <motion.article
-                    key={c.id}
-                    layout
-                    variants={CARD_VARIANTS}
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                    className="group relative overflow-hidden rounded-2xl border border-border/30 bg-card shadow-md shadow-black/[0.04] will-change-transform"
-                  >
-                    <div className="relative flex flex-col gap-5 p-8 sm:p-10">
-                      {/* Format badge + Tier-1 indicator */}
-                      <div className="flex items-center gap-2">
-                        <span className="rounded-full border border-border/40 px-3 py-0.5 font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
-                          {FORMAT_LABELS[c.format_type]}
-                        </span>
-                        {isTier1 && (
-                          <span className="flex items-center gap-1 rounded-full bg-primary/10 px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
-                            <Star className="h-3 w-3" strokeWidth={2} />
-                            Tier-1
-                          </span>
-                        )}
-                      </div>
+        {isLoading ? (
+          <p className="py-20 text-center font-mono text-sm text-muted-foreground">Loading competitions…</p>
+        ) : competitions.length === 0 ? (
+          <p className="py-20 text-center text-lg text-muted-foreground">
+            No {tab} competitions in The Vault.
+          </p>
+        ) : (
+          <div className="flex flex-col gap-10">
+            {Object.entries(groupedCompetitions).map(([source, items]) => (
+              <div key={source}>
+                <div className="mb-4 flex items-center gap-2">
+                  <Info className="h-4 w-4 text-muted-foreground/60" strokeWidth={1.5} />
+                  <h3 className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                    {sourceLabels[source] ?? source}
+                  </h3>
+                  <span className="rounded-full bg-muted px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
+                    {items.length}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-6">
+                  <AnimatePresence mode="popLayout">
+                    {items.map((c) => {
+                      const isTier1 = parsePrize(c.reward_pool) >= 30000;
+                      return (
+                        <motion.article
+                          key={c.id}
+                          layout
+                          variants={CARD_VARIANTS}
+                          initial="initial"
+                          animate="animate"
+                          exit="exit"
+                          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                          className="group relative overflow-hidden rounded-2xl border border-border/30 bg-card shadow-md shadow-black/[0.04] will-change-transform"
+                        >
+                          <div className="relative flex flex-col gap-5 p-8 sm:p-10">
+                            <div className="flex items-center gap-2">
+                              <span className="rounded-full border border-border/40 px-3 py-0.5 font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
+                                {FORMAT_LABELS[c.format_type]}
+                              </span>
+                              {isTier1 && (
+                                <span className="flex items-center gap-1 rounded-full bg-primary/10 px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
+                                  <Star className="h-3 w-3" strokeWidth={2} />
+                                  Tier-1
+                                </span>
+                              )}
+                              {c.is_remote && (
+                                <span className="rounded-full border border-border/30 px-3 py-0.5 font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60">
+                                  Remote
+                                </span>
+                              )}
+                            </div>
 
-                      <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                        {c.title}
-                      </h2>
+                            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                              {c.title}
+                            </h2>
 
-                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-sm text-muted-foreground">
-                        <span>{c.exhibition_date}</span>
-                        <span className="text-border">|</span>
-                        <span>{c.venue_location}</span>
-                        <span className="text-border">|</span>
-                        <span>{c.reward_pool}</span>
-                      </div>
+                            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-sm text-muted-foreground">
+                              <span>{c.exhibition_date}</span>
+                              <span className="text-border">|</span>
+                              <span>{c.venue_location}</span>
+                              <span className="text-border">|</span>
+                              <span>{c.reward_pool}</span>
+                            </div>
 
-                      {c.patron_entities && Array.isArray(c.patron_entities) && (
-                        <div className="flex flex-wrap gap-3">
-                          {(c.patron_entities as string[]).map((patron, i) => (
-                            <span
-                              key={i}
-                              className="text-xs font-medium text-muted-foreground/40 transition-all duration-500 group-hover:text-muted-foreground"
-                            >
-                              {patron}
-                            </span>
-                          ))}
-                        </div>
-                      )}
+                            {c.patron_entities && Array.isArray(c.patron_entities) && (
+                              <div className="flex flex-wrap gap-3">
+                                {(c.patron_entities as string[]).map((patron, i) => (
+                                  <span
+                                    key={i}
+                                    className="text-xs font-medium text-muted-foreground/40 transition-all duration-500 group-hover:text-muted-foreground"
+                                  >
+                                    {patron}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
 
-                      <div className="flex items-center gap-3 pt-2">
-                        {tab === 'pending' && (
-                          <>
-                            <button
-                              onClick={() => updateStatus.mutate({ id: c.id, status: 'published' })}
-                              className="flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-80"
-                            >
-                              <Check className="h-4 w-4" strokeWidth={1.5} />
-                              Exhibit
-                            </button>
-                            <button
-                              onClick={() => updateStatus.mutate({ id: c.id, status: 'archived' })}
-                              className="flex items-center gap-2 rounded-full border border-border/50 px-5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-                            >
-                              <Archive className="h-4 w-4" strokeWidth={1.5} />
-                              Archive
-                            </button>
-                          </>
-                        )}
-                        {tab === 'published' && (
-                          <button
-                            onClick={() => updateStatus.mutate({ id: c.id, status: 'archived' })}
-                            className="flex items-center gap-2 rounded-full border border-border/50 px-5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-                          >
-                            <Archive className="h-4 w-4" strokeWidth={1.5} />
-                            Archive
-                          </button>
-                        )}
-                        {tab === 'archived' && (
-                          <button
-                            onClick={() => updateStatus.mutate({ id: c.id, status: 'published' })}
-                            className="flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-80"
-                          >
-                            <Check className="h-4 w-4" strokeWidth={1.5} />
-                            Re-Exhibit
-                          </button>
-                        )}
-                        {c.provenance_link && (
-                          <a
-                            href={c.provenance_link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-2 rounded-full border border-border/30 bg-card/50 px-5 py-2.5 text-sm font-medium text-muted-foreground backdrop-blur-xl transition-colors hover:text-foreground"
-                          >
-                            <ExternalLink className="h-4 w-4" strokeWidth={1.5} />
-                            Provenance
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  </motion.article>
-                );
-              })}
-            </AnimatePresence>
-          )}
-        </div>
+                            <div className="flex items-center gap-3 pt-2">
+                              {tab === 'pending' && (
+                                <>
+                                  <button
+                                    onClick={() => updateStatus.mutate({ id: c.id, status: 'published' })}
+                                    className="flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-80"
+                                  >
+                                    <Check className="h-4 w-4" strokeWidth={1.5} />
+                                    Exhibit
+                                  </button>
+                                  <button
+                                    onClick={() => updateStatus.mutate({ id: c.id, status: 'archived' })}
+                                    className="flex items-center gap-2 rounded-full border border-border/50 px-5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                                  >
+                                    <Archive className="h-4 w-4" strokeWidth={1.5} />
+                                    Archive
+                                  </button>
+                                </>
+                              )}
+                              {tab === 'published' && (
+                                <button
+                                  onClick={() => updateStatus.mutate({ id: c.id, status: 'archived' })}
+                                  className="flex items-center gap-2 rounded-full border border-border/50 px-5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                                >
+                                  <Archive className="h-4 w-4" strokeWidth={1.5} />
+                                  Archive
+                                </button>
+                              )}
+                              {tab === 'archived' && (
+                                <button
+                                  onClick={() => updateStatus.mutate({ id: c.id, status: 'published' })}
+                                  className="flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-80"
+                                >
+                                  <Check className="h-4 w-4" strokeWidth={1.5} />
+                                  Re-Exhibit
+                                </button>
+                              )}
+                              {c.provenance_link && (
+                                <a
+                                  href={c.provenance_link}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex items-center gap-2 rounded-full border border-border/30 bg-card/50 px-5 py-2.5 text-sm font-medium text-muted-foreground backdrop-blur-xl transition-colors hover:text-foreground"
+                                >
+                                  <ExternalLink className="h-4 w-4" strokeWidth={1.5} />
+                                  Provenance
+                                </a>
+                              )}
+                            </div>
+                          </div>
+                        </motion.article>
+                      );
+                    })}
+                  </AnimatePresence>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );
