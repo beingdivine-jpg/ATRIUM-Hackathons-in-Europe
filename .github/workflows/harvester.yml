@@ -1,0 +1,39 @@
+name: Atrium Signal Harvester
+
+# This section tells GitHub when to run the script
+on:
+  schedule:
+    # Runs automatically every day at midnight (UTC time)
+    - cron: '0 0 * * *'
+  # Allows you to click a button to run it manually whenever you want
+  workflow_dispatch:
+
+jobs:
+  harvest_competitions:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 1. Access your repository files
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # 2. Set up the Python environment (the engine)
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 3. Install the "Requests" tool so Python can talk to the internet
+      - name: Install Dependencies
+        run: |
+          pip install requests
+
+      # 4. Run your actual scraper script
+      - name: Run Harvester Script
+        env:
+          # These grab the keys you saved in your GitHub Settings (Step 4)
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          python harvester.py
+        
