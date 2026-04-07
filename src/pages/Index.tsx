@@ -1,176 +1,66 @@
 import { useState } from "react";
-import { Search, Calendar, MapPin, Wifi, ExternalLink, Trophy, ArrowRight } from "lucide-react";
-
-type EventFormat = "in-person" | "remote" | "hybrid";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Search, Calendar, MapPin, Trophy, ArrowRight, ExternalLink, Wifi } from "lucide-react";
 
 interface Exhibition {
-  id: number;
-  name: string;
-  tagline: string;
-  city: string;
-  country: string;
-  dates: string;
-  startDate: string;
-  endDate: string;
-  prize: string;
-  format: EventFormat;
-  gradient: string;
-  upcoming: boolean;
-  organizer: string;
-  maxAttendees: number;
-  domain: string;
+  id: string;
+  title: string;
+  exhibition_date: string;
+  reward_pool: string;
+  patron_entities: string[] | null;
+  venue_location: string;
+  provenance_link: string | null;
 }
 
-const exhibitions: Exhibition[] = [
-  {
-    id: 1,
-    name: "AI Hack London",
-    tagline: "48 hours to reshape intelligence",
-    city: "London",
-    country: "UK",
-    dates: "Jun 14–16, 2026",
-    startDate: "2026-06-14",
-    endDate: "2026-06-16",
-    prize: "€50,000",
-    format: "in-person",
-    gradient: "from-emerald-50 via-teal-50/60 to-transparent",
-    upcoming: true,
-    organizer: "London AI Collective",
-    maxAttendees: 500,
-    domain: "AI Agentic Workflows",
-  },
-  {
-    id: 2,
-    name: "GreenTech Buildathon",
-    tagline: "Code for the planet",
-    city: "Stockholm",
-    country: "SE",
-    dates: "Jul 5–7, 2026",
-    startDate: "2026-07-05",
-    endDate: "2026-07-07",
-    prize: "€30,000",
-    format: "hybrid",
-    gradient: "from-lime-50 via-green-50/60 to-transparent",
-    upcoming: true,
-    organizer: "Nordic Green Innovation Hub",
-    maxAttendees: 300,
-    domain: "Sustainable Technology",
-  },
-  {
-    id: 3,
-    name: "Web3 Innovate Berlin",
-    tagline: "Decentralize everything",
-    city: "Berlin",
-    country: "DE",
-    dates: "Aug 22–24, 2026",
-    startDate: "2026-08-22",
-    endDate: "2026-08-24",
-    prize: "€75,000",
-    format: "in-person",
-    gradient: "from-violet-50 via-purple-50/60 to-transparent",
-    upcoming: true,
-    organizer: "Berlin Blockchain Consortium",
-    maxAttendees: 800,
-    domain: "Decentralized Systems",
-  },
-  {
-    id: 4,
-    name: "ETHParis Summit",
-    tagline: "The future of Ethereum, in Paris",
-    city: "Paris",
-    country: "FR",
-    dates: "Sep 10–12, 2026",
-    startDate: "2026-09-10",
-    endDate: "2026-09-12",
-    prize: "€100,000",
-    format: "in-person",
-    gradient: "from-blue-50 via-indigo-50/60 to-transparent",
-    upcoming: true,
-    organizer: "Ethereum France Association",
-    maxAttendees: 1200,
-    domain: "Ethereum & Layer 2",
-  },
-  {
-    id: 5,
-    name: "HealthTech Challenge",
-    tagline: "Hack healthcare's hardest problems",
-    city: "Amsterdam",
-    country: "NL",
-    dates: "Oct 3–5, 2026",
-    startDate: "2026-10-03",
-    endDate: "2026-10-05",
-    prize: "€40,000",
-    format: "remote",
-    gradient: "from-rose-50 via-pink-50/60 to-transparent",
-    upcoming: false,
-    organizer: "Dutch Health Innovation Lab",
-    maxAttendees: 400,
-    domain: "Digital Health & MedTech",
-  },
-];
-
-type Filter = "all" | "upcoming" | "in-person" | "remote";
-
-function generateJsonLd(exhibition: Exhibition) {
+function generateJsonLd(ex: Exhibition) {
   return {
     "@context": "https://schema.org",
     "@type": ["Hackathon", "ExhibitionEvent"],
-    name: exhibition.name,
-    description: exhibition.tagline,
-    startDate: exhibition.startDate,
-    endDate: exhibition.endDate,
+    name: ex.title,
+    description: `${ex.title} is a technical exhibition occurring in ${ex.venue_location} on ${ex.exhibition_date}`,
     location: {
-      "@type": exhibition.format === "remote" ? "VirtualLocation" : "Place",
-      name: `${exhibition.city}, ${exhibition.country}`,
-      ...(exhibition.format === "remote"
-        ? { url: "https://atrium.eu" }
-        : {
-            address: {
-              "@type": "PostalAddress",
-              addressLocality: exhibition.city,
-              addressCountry: exhibition.country,
-            },
-          }),
+      "@type": "Place",
+      name: ex.venue_location,
     },
-    organizer: {
-      "@type": "Organization",
-      name: exhibition.organizer,
-    },
-    maximumAttendeeCapacity: exhibition.maxAttendees,
-    eventAttendanceMode:
-      exhibition.format === "remote"
-        ? "https://schema.org/OnlineEventAttendanceMode"
-        : exhibition.format === "hybrid"
-          ? "https://schema.org/MixedEventAttendanceMode"
-          : "https://schema.org/OfflineEventAttendanceMode",
     offers: {
       "@type": "Offer",
-      description: `Prize pool: ${exhibition.prize}`,
+      description: `Prize pool: ${ex.reward_pool}`,
     },
   };
 }
+
+type Filter = "all" | "upcoming";
 
 const Index = () => {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
 
+  const { data: exhibitions = [], isLoading } = useQuery({
+    queryKey: ["public-exhibitions"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("technical_exhibitions")
+        .select("id, title, exhibition_date, reward_pool, patron_entities, venue_location, provenance_link")
+        .eq("status", "published")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as Exhibition[];
+    },
+  });
+
   const filtered = exhibitions.filter((e) => {
     const matchSearch =
       !search ||
-      e.name.toLowerCase().includes(search.toLowerCase()) ||
-      e.city.toLowerCase().includes(search.toLowerCase());
-    const matchFilter =
-      filter === "all" ||
-      (filter === "upcoming" && e.upcoming) ||
-      (filter === "in-person" && e.format === "in-person") ||
-      (filter === "remote" && e.format === "remote");
-    return matchSearch && matchFilter;
+      e.title.toLowerCase().includes(search.toLowerCase()) ||
+      e.venue_location.toLowerCase().includes(search.toLowerCase());
+    return matchSearch;
   });
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* JSON-LD for all exhibitions */}
-      {exhibitions.map((ex) => (
+      {/* JSON-LD */}
+      {filtered.map((ex) => (
         <script
           key={ex.id}
           type="application/ld+json"
@@ -197,13 +87,15 @@ const Index = () => {
           EPFL), the SECCLO Consortium (Aalto University, KTH Royal Institute of Technology),
           and the EULiST Alliance.
         </p>
-        <p>
-          Whether you are searching for AI hackathons in London 2026, blockchain competitions in
-          Berlin, green technology buildathons in Stockholm, Ethereum summits in Paris, or
-          health-tech challenges in Amsterdam — Atrium curates the definitive collection of
-          Europe's most impactful technical competitions. Find upcoming in-person, remote, and
-          hybrid exhibitions with prize pools ranging from €30,000 to €100,000+.
-        </p>
+        {filtered.map((ex) => (
+          <p key={ex.id}>
+            {ex.title} is a technical exhibition occurring in {ex.venue_location} on{" "}
+            {ex.exhibition_date}. The prize pool is {ex.reward_pool}.
+            {ex.patron_entities && Array.isArray(ex.patron_entities)
+              ? ` Patrons include ${(ex.patron_entities as string[]).join(", ")}.`
+              : ""}
+          </p>
+        ))}
       </div>
 
       {/* Hero */}
@@ -237,13 +129,18 @@ const Index = () => {
       {/* Gallery */}
       <section className="mx-auto max-w-4xl px-4 pb-32">
         <div className="flex flex-col gap-8">
-          {filtered.map((exhibition) => (
-            <ExhibitionCard key={exhibition.id} exhibition={exhibition} />
-          ))}
-          {filtered.length === 0 && (
+          {isLoading ? (
             <p className="py-20 text-center text-lg text-muted-foreground">
-              No exhibitions found. Try adjusting your search or filters.
+              Loading the Gallery…
             </p>
+          ) : filtered.length === 0 ? (
+            <p className="py-20 text-center text-lg text-muted-foreground">
+              No exhibitions found. Try adjusting your search.
+            </p>
+          ) : (
+            filtered.map((exhibition) => (
+              <ExhibitionCard key={exhibition.id} exhibition={exhibition} />
+            ))
           )}
         </div>
       </section>
@@ -251,14 +148,10 @@ const Index = () => {
       {/* Command Pill */}
       <nav className="fixed bottom-8 left-1/2 z-50 -translate-x-1/2" aria-label="Filter exhibitions">
         <div className="flex items-center gap-1 rounded-full border border-border/50 bg-white/70 px-2 py-2 shadow-xl shadow-black/[0.06] backdrop-blur-xl">
-          {(
-            [
-              { key: "all", label: "All", icon: null },
-              { key: "upcoming", label: "Upcoming", icon: Calendar },
-              { key: "in-person", label: "In-Person", icon: MapPin },
-              { key: "remote", label: "Remote", icon: Wifi },
-            ] as const
-          ).map(({ key, label, icon: Icon }) => (
+          {([
+            { key: "all" as Filter, label: "All", icon: null },
+            { key: "upcoming" as Filter, label: "Upcoming", icon: Calendar },
+          ]).map(({ key, label, icon: Icon }) => (
             <button
               key={key}
               onClick={() => setFilter(key)}
@@ -269,7 +162,7 @@ const Index = () => {
               }`}
             >
               {Icon && <Icon className="h-4 w-4" strokeWidth={1.5} />}
-              <span className="hidden sm:inline">{label}</span>
+              <span>{label}</span>
             </button>
           ))}
         </div>
@@ -281,53 +174,47 @@ const Index = () => {
 const ExhibitionCard = ({ exhibition }: { exhibition: Exhibition }) => {
   return (
     <article className="group relative overflow-hidden rounded-2xl border border-border/40 bg-card shadow-md shadow-black/[0.04] transition-all duration-500 ease-in-out hover:scale-[1.02] hover:shadow-xl hover:shadow-black/[0.07]">
-      {/* Gradient overlay */}
-      <div className={`absolute inset-0 bg-gradient-to-br ${exhibition.gradient}`} />
-
       {/* Geometric decoration */}
       <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full border border-foreground/[0.04] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
       <div className="absolute -bottom-6 -left-6 h-24 w-24 rounded-full border border-foreground/[0.04] opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
 
       <div className="relative flex flex-col gap-6 p-8 sm:p-10">
-        {/* Top */}
-        <div className="flex items-start justify-between">
-          <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
-            {exhibition.format === "in-person"
-              ? "In-Person"
-              : exhibition.format === "remote"
-                ? "Remote"
-                : "Hybrid"}
-          </span>
-          {exhibition.upcoming && (
-            <span className="rounded-full bg-primary/15 px-3 py-1 text-xs font-medium text-primary">
-              Upcoming Exhibition
-            </span>
-          )}
-        </div>
-
         {/* Title */}
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
-            {exhibition.name}
-          </h2>
-          <p className="mt-2 text-lg text-muted-foreground">{exhibition.tagline}</p>
-        </div>
+        <h2 className="text-3xl font-bold tracking-tighter text-foreground sm:text-4xl lg:text-5xl">
+          {exhibition.title}
+        </h2>
 
-        {/* Info bar */}
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
+        {/* Metadata bar — archival mono style */}
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-sm text-muted-foreground">
           <span className="flex items-center gap-1.5">
             <Calendar className="h-4 w-4" strokeWidth={1.5} />
-            {exhibition.dates}
+            {exhibition.exhibition_date}
           </span>
+          <span className="text-border">|</span>
           <span className="flex items-center gap-1.5">
             <MapPin className="h-4 w-4" strokeWidth={1.5} />
-            {exhibition.city}, {exhibition.country}
+            {exhibition.venue_location}
           </span>
+          <span className="text-border">|</span>
           <span className="flex items-center gap-1.5">
             <Trophy className="h-4 w-4" strokeWidth={1.5} />
-            {exhibition.prize}
+            {exhibition.reward_pool}
           </span>
         </div>
+
+        {/* Patrons Row */}
+        {exhibition.patron_entities && Array.isArray(exhibition.patron_entities) && (
+          <div className="flex flex-wrap gap-4">
+            {(exhibition.patron_entities as string[]).map((patron, i) => (
+              <span
+                key={i}
+                className="text-xs font-medium uppercase tracking-wider text-muted-foreground/40 transition-all duration-500 group-hover:text-muted-foreground"
+              >
+                {patron}
+              </span>
+            ))}
+          </div>
+        )}
 
         {/* Hover CTA */}
         <div className="flex translate-y-4 items-center gap-2 opacity-0 transition-all duration-500 ease-in-out group-hover:translate-y-0 group-hover:opacity-100">
@@ -335,10 +222,17 @@ const ExhibitionCard = ({ exhibition }: { exhibition: Exhibition }) => {
             Exhibit Your Solution
             <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
           </button>
-          <button className="flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
-            <ExternalLink className="h-4 w-4" strokeWidth={1.5} />
-            Details
-          </button>
+          {exhibition.provenance_link && (
+            <a
+              href={exhibition.provenance_link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 rounded-full border border-border/50 bg-white/50 px-5 py-2.5 text-sm font-medium text-muted-foreground backdrop-blur-xl transition-colors hover:text-foreground"
+            >
+              <ExternalLink className="h-4 w-4" strokeWidth={1.5} />
+              Examine Provenance
+            </a>
+          )}
         </div>
       </div>
     </article>
