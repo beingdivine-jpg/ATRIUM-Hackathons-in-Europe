@@ -26,7 +26,7 @@ const events: HackEvent[] = [
     dates: "Jun 14–16, 2026",
     prize: "€50,000",
     format: "in-person",
-    gradient: "from-emerald-900/40 via-teal-900/20 to-transparent",
+    gradient: "from-emerald-50 via-teal-50/60 to-transparent",
     upcoming: true,
   },
   {
@@ -38,7 +38,7 @@ const events: HackEvent[] = [
     dates: "Jul 5–7, 2026",
     prize: "€30,000",
     format: "hybrid",
-    gradient: "from-lime-900/40 via-green-900/20 to-transparent",
+    gradient: "from-lime-50 via-green-50/60 to-transparent",
     upcoming: true,
   },
   {
@@ -50,7 +50,7 @@ const events: HackEvent[] = [
     dates: "Aug 22–24, 2026",
     prize: "€75,000",
     format: "in-person",
-    gradient: "from-violet-900/40 via-purple-900/20 to-transparent",
+    gradient: "from-violet-50 via-purple-50/60 to-transparent",
     upcoming: true,
   },
   {
@@ -62,7 +62,7 @@ const events: HackEvent[] = [
     dates: "Sep 10–12, 2026",
     prize: "€100,000",
     format: "in-person",
-    gradient: "from-blue-900/40 via-indigo-900/20 to-transparent",
+    gradient: "from-blue-50 via-indigo-50/60 to-transparent",
     upcoming: true,
   },
   {
@@ -74,7 +74,7 @@ const events: HackEvent[] = [
     dates: "Oct 3–5, 2026",
     prize: "€40,000",
     format: "remote",
-    gradient: "from-rose-900/40 via-pink-900/20 to-transparent",
+    gradient: "from-rose-50 via-pink-50/60 to-transparent",
     upcoming: false,
   },
 ];
@@ -109,7 +109,7 @@ const Index = () => {
           The definitive directory of hackathons, buildathons & innovation programs across Europe.
         </p>
         <div className="mt-10 w-full max-w-xl">
-          <div className="flex items-center gap-3 rounded-full bg-white/5 px-6 py-4 backdrop-blur-md">
+          <div className="flex items-center gap-3 rounded-full bg-white/70 px-6 py-4 backdrop-blur-xl shadow-lg shadow-black/[0.03] border border-border/50">
             <Search className="h-5 w-5 text-muted-foreground shrink-0" strokeWidth={1.5} />
             <input
               type="text"
@@ -138,7 +138,7 @@ const Index = () => {
 
       {/* Command Pill */}
       <nav className="fixed bottom-8 left-1/2 z-50 -translate-x-1/2">
-        <div className="flex items-center gap-1 rounded-full border border-border/50 bg-card/80 px-2 py-2 backdrop-blur-xl shadow-2xl">
+        <div className="flex items-center gap-1 rounded-full border border-border/50 bg-white/70 px-2 py-2 backdrop-blur-xl shadow-xl shadow-black/[0.06]">
           {(
             [
               { key: "all", label: "All", icon: null },
@@ -168,18 +168,18 @@ const Index = () => {
 
 const EventCard = ({ event }: { event: HackEvent }) => {
   return (
-    <div className="group relative overflow-hidden rounded-2xl bg-card transition-all duration-500 ease-in-out hover:scale-[1.02]">
+    <div className="group relative overflow-hidden rounded-2xl bg-card shadow-md shadow-black/[0.04] border border-border/40 transition-all duration-500 ease-in-out hover:scale-[1.02] hover:shadow-xl hover:shadow-black/[0.07]">
       {/* Gradient overlay */}
       <div className={`absolute inset-0 bg-gradient-to-br ${event.gradient}`} />
 
       {/* Geometric decoration */}
-      <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full border border-white/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-      <div className="absolute -bottom-6 -left-6 h-24 w-24 rounded-full border border-white/5 opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
+      <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full border border-foreground/[0.04] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+      <div className="absolute -bottom-6 -left-6 h-24 w-24 rounded-full border border-foreground/[0.04] opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
 
       <div className="relative flex flex-col gap-6 p-8 sm:p-10">
         {/* Top */}
         <div className="flex items-start justify-between">
-          <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-muted-foreground">
+          <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
             {event.format === "in-person"
               ? "In-Person"
               : event.format === "remote"
