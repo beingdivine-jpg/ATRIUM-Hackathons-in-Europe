@@ -1,39 +1,46 @@
-name: Atrium Signal Harvester
+import os, requests, json
 
-# This section tells GitHub when to run the script
-on:
-  schedule:
-    # Runs automatically every day at midnight (UTC time)
-    - cron: '0 0 * * *'
-  # Allows you to click a button to run it manually whenever you want
-  workflow_dispatch:
+# These are the same secrets you already set in GitHub
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY") # You can get this easily from Lovable
+# Add this one new secret to GitHub Actions (Step 5 below)
+HANDSHAKE_TOKEN = os.getenv("HARVESTER_SECRET") 
 
-jobs:
-  harvest_competitions:
-    runs-on: ubuntu-latest
+def harvest_signals():
+    # Simple example targeting Devpost Europe
+    url = "https://devpost.com/api/hackathons?challenge_type=upcoming&location=Europe"
+    findings =
     
-    steps:
-      # 1. Access your repository files
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+    try:
+        r = requests.get(url, timeout=10)
+        for item in r.json().get('hackathons',):
+            findings.append({
+                "title": item.get("title"),
+                "timeline_date": item.get("submission_period_dates"),
+                "reward_pool": item.get("prize_amount", "€0"),
+                "patron_entities": [item.get("host_name")],
+                "venue_location": item.get("city_state", "Europe"),
+                "provenance_link": item.get("url"),
+                "competition_type": "hackathon",
+                "is_remote": "online" in item.get("challenge_type", "").lower(),
+                "source_signal": "via Devpost"
+            })
+    except: pass
+    return findings
 
-      # 2. Set up the Python environment (the engine)
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+def send_to_atrium_edge_function(data):
+    # This calls the secure "Middleman" we built in Lovable
+    endpoint = f"{SUPABASE_URL}/functions/v1/ingest-signal"
+    headers = {
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": f"Bearer {SUPABASE_ANON_KEY}",
+        "Content-Type": "application/json",
+        "X-Atrium-Handshake": HANDSHAKE_TOKEN # This is the secret handshake
+    }
+    response = requests.post(endpoint, headers=headers, json=data)
+    print(f"Scout Status: {response.status_code}")
 
-      # 3. Install the "Requests" tool so Python can talk to the internet
-      - name: Install Dependencies
-        run: |
-          pip install requests
-
-      # 4. Run your actual scraper script
-      - name: Run Harvester Script
-        env:
-          # These grab the keys you saved in your GitHub Settings (Step 4)
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: |
-          python harvester.py
-        
+if __name__ == "__main__":
+    competitions = harvest_signals()
+    if competitions:
+        send_to_atrium_edge_function(competitions)
