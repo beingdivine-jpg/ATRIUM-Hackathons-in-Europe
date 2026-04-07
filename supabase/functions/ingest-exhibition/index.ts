@@ -5,6 +5,8 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const VALID_FORMATS = ["hackathon", "buildathon", "innovation_challenge"];
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -18,7 +20,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { title, exhibition_date, reward_pool, patron_entities, venue_location, provenance_link } = await req.json();
+    const { title, exhibition_date, reward_pool, patron_entities, venue_location, provenance_link, format_type } = await req.json();
 
     if (!title || !exhibition_date || !reward_pool || !venue_location) {
       return new Response(
@@ -27,13 +29,15 @@ Deno.serve(async (req) => {
       );
     }
 
+    const resolvedFormat = VALID_FORMATS.includes(format_type) ? format_type : "hackathon";
+
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
     const { data, error } = await supabaseAdmin
-      .from("technical_exhibitions")
+      .from("competitions")
       .insert({
         title: String(title).trim(),
         exhibition_date: String(exhibition_date).trim(),
@@ -41,6 +45,7 @@ Deno.serve(async (req) => {
         patron_entities: Array.isArray(patron_entities) ? patron_entities : [],
         venue_location: String(venue_location).trim(),
         provenance_link: provenance_link ? String(provenance_link).trim() : null,
+        format_type: resolvedFormat,
         status: "pending",
       })
       .select()
@@ -49,7 +54,7 @@ Deno.serve(async (req) => {
     if (error) throw error;
 
     return new Response(
-      JSON.stringify({ success: true, exhibition: data }),
+      JSON.stringify({ success: true, competition: data }),
       { status: 201, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (err) {
