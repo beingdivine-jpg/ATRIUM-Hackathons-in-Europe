@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import Entrance from "./pages/Entrance";
 import Vault from "./pages/Vault";
 import NotFound from "./pages/NotFound";
 
