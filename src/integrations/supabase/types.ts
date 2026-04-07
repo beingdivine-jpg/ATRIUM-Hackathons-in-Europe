@@ -14,10 +14,11 @@ export type Database = {
   }
   public: {
     Tables: {
-      technical_exhibitions: {
+      competitions: {
         Row: {
           created_at: string
           exhibition_date: string
+          format_type: Database["public"]["Enums"]["competition_format"]
           id: string
           patron_entities: Json | null
           provenance_link: string | null
@@ -30,6 +31,7 @@ export type Database = {
         Insert: {
           created_at?: string
           exhibition_date: string
+          format_type?: Database["public"]["Enums"]["competition_format"]
           id?: string
           patron_entities?: Json | null
           provenance_link?: string | null
@@ -42,6 +44,7 @@ export type Database = {
         Update: {
           created_at?: string
           exhibition_date?: string
+          format_type?: Database["public"]["Enums"]["competition_format"]
           id?: string
           patron_entities?: Json | null
           provenance_link?: string | null
@@ -89,6 +92,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
+      competition_format: "hackathon" | "buildathon" | "innovation_challenge"
       exhibition_status: "pending" | "published" | "archived"
     }
     CompositeTypes: {
@@ -218,6 +222,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "moderator", "user"],
+      competition_format: ["hackathon", "buildathon", "innovation_challenge"],
       exhibition_status: ["pending", "published", "archived"],
     },
   },
