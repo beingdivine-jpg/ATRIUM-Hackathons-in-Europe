@@ -20,9 +20,11 @@ export type Database = {
           exhibition_date: string
           format_type: Database["public"]["Enums"]["competition_format"]
           id: string
+          is_remote: boolean | null
           patron_entities: Json | null
           provenance_link: string | null
           reward_pool: string
+          source_signal: string | null
           status: Database["public"]["Enums"]["exhibition_status"]
           title: string
           updated_at: string
@@ -33,9 +35,11 @@ export type Database = {
           exhibition_date: string
           format_type?: Database["public"]["Enums"]["competition_format"]
           id?: string
+          is_remote?: boolean | null
           patron_entities?: Json | null
           provenance_link?: string | null
           reward_pool: string
+          source_signal?: string | null
           status?: Database["public"]["Enums"]["exhibition_status"]
           title: string
           updated_at?: string
@@ -46,9 +50,11 @@ export type Database = {
           exhibition_date?: string
           format_type?: Database["public"]["Enums"]["competition_format"]
           id?: string
+          is_remote?: boolean | null
           patron_entities?: Json | null
           provenance_link?: string | null
           reward_pool?: string
+          source_signal?: string | null
           status?: Database["public"]["Enums"]["exhibition_status"]
           title?: string
           updated_at?: string
