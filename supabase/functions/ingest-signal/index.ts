@@ -17,6 +17,11 @@ interface IncomingCompetition {
   format_type?: string;
   source_signal?: string;
   is_remote?: boolean;
+  organizer?: string;
+  description?: string;
+  end_date?: string;
+  application_link?: string;
+  tags?: string[];
 }
 
 function parsePrizeAmount(pool: string): number {
@@ -102,13 +107,18 @@ Deno.serve(async (req) => {
       return {
         title: String(item.title).trim(),
         exhibition_date: String(item.exhibition_date).trim(),
+        end_date: item.end_date ? String(item.end_date).trim() : null,
         reward_pool: String(item.reward_pool).trim(),
         patron_entities: Array.isArray(item.patron_entities) ? item.patron_entities : [],
         venue_location: String(item.venue_location).trim(),
         provenance_link: String(item.provenance_link).trim(),
+        application_link: item.application_link ? String(item.application_link).trim() : null,
         format_type: format,
         source_signal: item.source_signal ? String(item.source_signal).trim() : "unknown",
         is_remote: isRemote,
+        organizer: item.organizer ? String(item.organizer).trim() : null,
+        description: item.description ? String(item.description).trim() : null,
+        tags: Array.isArray(item.tags) ? item.tags : null,
         status,
       };
     });
