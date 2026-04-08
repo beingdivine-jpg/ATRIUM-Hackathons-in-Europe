@@ -8,6 +8,7 @@ import Auth from "./pages/Auth";
 import Entrance from "./pages/Entrance";
 import Vault from "./pages/Vault";
 import NotFound from "./pages/NotFound";
+import BulkUpload from "./pages/BulkUpload";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/auth" element={<Auth />} />
           <Route path="/entrance" element={<Entrance />} />
           <Route path="/vault" element={<Vault />} />
+          <Route path="/vault/upload" element={<BulkUpload />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
