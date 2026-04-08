@@ -189,7 +189,7 @@ const BulkUpload = () => {
             }
             return flat;
           });
-          const hdrs = [...new Set(rows.flatMap((r: Record<string, string>) => Object.keys(r)))];
+          const hdrs: string[] = [...new Set(rows.flatMap((r: Record<string, string>) => Object.keys(r)))] as string[];
           setHeaders(hdrs);
           setRawData(rows);
           setMapping(autoMap(hdrs));
