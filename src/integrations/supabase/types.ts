@@ -16,46 +16,61 @@ export type Database = {
     Tables: {
       competitions: {
         Row: {
+          application_link: string | null
           created_at: string
+          description: string | null
+          end_date: string | null
           exhibition_date: string
           format_type: Database["public"]["Enums"]["competition_format"]
           id: string
           is_remote: boolean | null
+          organizer: string | null
           patron_entities: Json | null
           provenance_link: string | null
           reward_pool: string
           source_signal: string | null
           status: Database["public"]["Enums"]["exhibition_status"]
+          tags: string[] | null
           title: string
           updated_at: string
           venue_location: string
         }
         Insert: {
+          application_link?: string | null
           created_at?: string
+          description?: string | null
+          end_date?: string | null
           exhibition_date: string
           format_type?: Database["public"]["Enums"]["competition_format"]
           id?: string
           is_remote?: boolean | null
+          organizer?: string | null
           patron_entities?: Json | null
           provenance_link?: string | null
           reward_pool: string
           source_signal?: string | null
           status?: Database["public"]["Enums"]["exhibition_status"]
+          tags?: string[] | null
           title: string
           updated_at?: string
           venue_location: string
         }
         Update: {
+          application_link?: string | null
           created_at?: string
+          description?: string | null
+          end_date?: string | null
           exhibition_date?: string
           format_type?: Database["public"]["Enums"]["competition_format"]
           id?: string
           is_remote?: boolean | null
+          organizer?: string | null
           patron_entities?: Json | null
           provenance_link?: string | null
           reward_pool?: string
           source_signal?: string | null
           status?: Database["public"]["Enums"]["exhibition_status"]
+          tags?: string[] | null
           title?: string
           updated_at?: string
           venue_location?: string
