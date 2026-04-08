@@ -1,12 +1,12 @@
 import { useState, useMemo } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuthReady } from '@/hooks/useAuthReady';
 import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Archive, ExternalLink, LogOut, Star, Zap, Shield, Info } from 'lucide-react';
+import { Check, Archive, ExternalLink, LogOut, Star, Zap, Shield, Info, Upload } from 'lucide-react';
 
 type ExhibitionStatus = 'pending' | 'published' | 'archived';
 type CompetitionFormat = 'hackathon' | 'buildathon' | 'innovation_challenge';
@@ -164,13 +164,22 @@ const Vault = () => {
           </p>
           <h1 className="text-3xl font-bold tracking-tight">The Vault</h1>
         </div>
-        <button
-          onClick={handleSignOut}
-          className="flex items-center gap-2 rounded-full border border-border/40 px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-foreground hover:text-background"
-        >
-          <LogOut className="h-4 w-4" strokeWidth={1.5} />
-          Sign Out
-        </button>
+        <div className="flex items-center gap-3">
+          <Link
+            to="/vault/upload"
+            className="flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
+          >
+            <Upload className="h-4 w-4" strokeWidth={1.5} />
+            Bulk Upload
+          </Link>
+          <button
+            onClick={handleSignOut}
+            className="flex items-center gap-2 rounded-full border border-border/40 px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-foreground hover:text-background"
+          >
+            <LogOut className="h-4 w-4" strokeWidth={1.5} />
+            Sign Out
+          </button>
+        </div>
       </header>
 
       {/* Handshake Configuration Notice */}
