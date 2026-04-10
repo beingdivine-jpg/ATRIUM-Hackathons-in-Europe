@@ -23,17 +23,17 @@ const BottomNav = ({ isAdmin }: BottomNavProps) => {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 safe-area-bottom">
       <div className="mx-auto max-w-lg px-4 pb-2 pt-0">
-        <div className="flex items-center justify-around rounded-2xl border border-border/30 bg-card/80 px-2 py-2 shadow-lg shadow-black/[0.06] backdrop-blur-xl">
+        <div className="flex items-center justify-around rounded-2xl border border-border/20 bg-white/80 px-2 py-2.5 shadow-sm backdrop-blur-xl">
           {items.filter(i => i.show).map(({ to, icon: Icon, label }) => {
             const active = path === to || (to !== '/' && path.startsWith(to));
             return (
               <Link
                 key={to}
                 to={to}
-                className={`flex flex-col items-center gap-0.5 rounded-xl px-4 py-2 transition-all duration-200 ${
+                className={`flex flex-col items-center gap-1 rounded-xl px-4 py-2 transition-all duration-200 ${
                   active
-                    ? 'bg-primary/10 text-primary'
-                    : 'text-muted-foreground'
+                    ? 'text-primary'
+                    : 'text-muted-foreground/60'
                 }`}
               >
                 <Icon className="h-5 w-5" strokeWidth={active ? 2 : 1.5} />
@@ -44,7 +44,7 @@ const BottomNav = ({ isAdmin }: BottomNavProps) => {
           {isAdmin && (
             <button
               onClick={handleSignOut}
-              className="flex flex-col items-center gap-0.5 rounded-xl px-4 py-2 text-muted-foreground transition-all duration-200"
+              className="flex flex-col items-center gap-1 rounded-xl px-4 py-2 text-muted-foreground/60 transition-all duration-200"
             >
               <LogOut className="h-5 w-5" strokeWidth={1.5} />
               <span className="text-[10px] font-medium tracking-wide">Exit</span>
