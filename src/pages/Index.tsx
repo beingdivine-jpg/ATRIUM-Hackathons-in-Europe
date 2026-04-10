@@ -127,18 +127,18 @@ const Index = () => {
       </div>
 
       {/* Hero */}
-      <section className="flex min-h-[70vh] flex-col items-center justify-center px-4">
+      <section className="flex min-h-[60vh] sm:min-h-[70vh] flex-col items-center justify-center px-5 sm:px-4">
         <p className="mb-4 text-sm font-medium uppercase tracking-[0.3em] text-muted-foreground">
           Atrium Europe
         </p>
-        <h1 className="text-center text-6xl font-bold tracking-tight sm:text-8xl lg:text-9xl">
+        <h1 className="text-center text-5xl font-bold tracking-tight sm:text-8xl lg:text-9xl">
           Build Europe.
         </h1>
-        <p className="mt-4 max-w-xl text-center text-lg text-muted-foreground">
+        <p className="mt-4 max-w-xl text-center text-base sm:text-lg text-muted-foreground">
           Find the elite hackathons, buildathons, and innovation challenges shaping the future of European tech.
         </p>
-        <div className="mt-10 w-full max-w-xl">
-          <div className="flex items-center gap-3 rounded-full border border-border/50 bg-white/70 px-6 py-4 shadow-lg shadow-black/[0.03] backdrop-blur-xl">
+        <div className="mt-8 sm:mt-10 w-full max-w-xl">
+          <div className="flex items-center gap-3 rounded-full border border-border/50 bg-white/70 px-5 sm:px-6 py-3.5 sm:py-4 shadow-lg shadow-black/[0.03] backdrop-blur-xl">
             <Search className="h-5 w-5 shrink-0 text-muted-foreground" strokeWidth={1.5} />
             <input
               type="text"
@@ -152,8 +152,8 @@ const Index = () => {
       </section>
 
       {/* Gallery */}
-      <section className="mx-auto max-w-4xl px-4 pb-32">
-        <div className="flex flex-col gap-8">
+      <section className="mx-auto max-w-4xl px-4 pb-28 sm:pb-32">
+        <div className="flex flex-col gap-6 sm:gap-8">
           {isLoading ? (
             <p className="py-20 text-center text-lg text-muted-foreground">
               Loading the Gallery…
@@ -171,25 +171,26 @@ const Index = () => {
       </section>
 
       {/* Command Pill */}
-      <nav className="fixed bottom-8 left-1/2 z-50 -translate-x-1/2" aria-label="Filter competitions">
-        <div className="flex items-center gap-1 rounded-full border border-border/50 bg-white/70 px-2 py-2 shadow-xl shadow-black/[0.06] backdrop-blur-xl">
+      <nav className="fixed bottom-6 sm:bottom-8 left-1/2 z-50 -translate-x-1/2 w-[calc(100%-2rem)] max-w-fit" aria-label="Filter competitions">
+        <div className="flex items-center gap-0.5 sm:gap-1 rounded-full border border-border/50 bg-white/70 px-1.5 sm:px-2 py-1.5 sm:py-2 shadow-xl shadow-black/[0.06] backdrop-blur-xl">
           {([
-            { key: "all" as Filter, label: "All", icon: null },
-            { key: "hackathon" as Filter, label: "Hackathons", icon: Zap },
-            { key: "buildathon" as Filter, label: "Buildathons", icon: Calendar },
-            { key: "innovation_challenge" as Filter, label: "Challenges", icon: Trophy },
-          ]).map(({ key, label, icon: Icon }) => (
+            { key: "all" as Filter, label: "All", mobileLabel: "All", icon: null },
+            { key: "hackathon" as Filter, label: "Hackathons", mobileLabel: "Hack", icon: Zap },
+            { key: "buildathon" as Filter, label: "Buildathons", mobileLabel: "Build", icon: Calendar },
+            { key: "innovation_challenge" as Filter, label: "Challenges", mobileLabel: "Challenge", icon: Trophy },
+          ]).map(({ key, label, mobileLabel, icon: Icon }) => (
             <button
               key={key}
               onClick={() => setFilter(key)}
-              className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 ${
+              className={`flex items-center gap-1 sm:gap-2 rounded-full px-2.5 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-all duration-300 ${
                 filter === key
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              {Icon && <Icon className="h-4 w-4" strokeWidth={1.5} />}
-              <span>{label}</span>
+              {Icon && <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.5} />}
+              <span className="hidden sm:inline">{label}</span>
+              <span className="sm:hidden">{mobileLabel}</span>
             </button>
           ))}
         </div>
