@@ -4,44 +4,44 @@
 
 @layer base {
   :root {
-    --background: 40 24% 97%;
-    --foreground: 220 22% 12%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 11%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 22% 12%;
+    --card-foreground: 0 0% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 22% 12%;
+    --popover-foreground: 0 0% 11%;
 
-    --primary: 152 44% 32%;
+    --primary: 0 0% 11%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 40 18% 94%;
-    --secondary-foreground: 220 22% 12%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 11%;
 
-    --muted: 40 12% 93%;
-    --muted-foreground: 220 10% 46%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 152 44% 32%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 11%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 40 14% 90%;
-    --input: 40 14% 90%;
-    --ring: 152 44% 32%;
+    --border: 0 0% 92%;
+    --input: 0 0% 92%;
+    --ring: 0 0% 11%;
 
-    --radius: 0.875rem;
+    --radius: 0.75rem;
 
-    --sidebar-background: 40 18% 96%;
-    --sidebar-foreground: 220 22% 12%;
-    --sidebar-primary: 152 44% 32%;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 0 0% 11%;
+    --sidebar-primary: 0 0% 11%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 40 12% 93%;
-    --sidebar-accent-foreground: 220 22% 12%;
-    --sidebar-border: 40 14% 90%;
-    --sidebar-ring: 152 44% 32%;
+    --sidebar-accent: 0 0% 96%;
+    --sidebar-accent-foreground: 0 0% 11%;
+    --sidebar-border: 0 0% 92%;
+    --sidebar-ring: 0 0% 11%;
   }
 }
 
@@ -66,15 +66,9 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background: hsl(40 24% 97%);
     min-height: 100vh;
-  }
-
-  .font-display {
-    font-family: 'DM Serif Display', Georgia, serif;
   }
 }
