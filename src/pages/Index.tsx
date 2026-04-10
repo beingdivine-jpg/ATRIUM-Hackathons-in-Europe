@@ -205,48 +205,48 @@ const CompetitionCard = ({ competition }: { competition: Competition }) => {
   );
 
   return (
-    <article className="group relative overflow-hidden rounded-2xl border border-border/40 bg-card shadow-md shadow-black/[0.04] transition-all duration-500 ease-in-out hover:scale-[1.02] hover:shadow-xl hover:shadow-black/[0.07] will-change-transform">
+    <article className="group relative overflow-hidden rounded-2xl border border-border/40 bg-card shadow-md shadow-black/[0.04] transition-all duration-500 ease-in-out sm:hover:scale-[1.02] hover:shadow-xl hover:shadow-black/[0.07] will-change-transform">
       {/* Geometric decoration */}
       <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full border border-foreground/[0.04] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
       <div className="absolute -bottom-6 -left-6 h-24 w-24 rounded-full border border-foreground/[0.04] opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
 
-      <div className="relative flex flex-col gap-6 p-8 sm:p-10">
+      <div className="relative flex flex-col gap-4 sm:gap-6 p-5 sm:p-10">
         {/* Format badge */}
         <span className="w-fit rounded-full border border-border/40 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
           {FORMAT_LABELS[competition.format_type]}
         </span>
 
         {/* Title */}
-        <h2 className="text-3xl font-bold tracking-tighter text-foreground sm:text-4xl lg:text-5xl">
+        <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold tracking-tighter text-foreground">
           {competition.title}
         </h2>
 
         {/* Metadata bar */}
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-sm text-muted-foreground">
+        <div className="flex flex-wrap items-center gap-x-3 sm:gap-x-4 gap-y-1.5 font-mono text-xs sm:text-sm text-muted-foreground">
           <span className="flex items-center gap-1.5">
-            <Zap className="h-4 w-4" strokeWidth={1.5} />
+            <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.5} />
             {FORMAT_LABELS[competition.format_type]}
           </span>
           <span className="text-border">|</span>
           <span className="flex items-center gap-1.5">
-            <Calendar className="h-4 w-4" strokeWidth={1.5} />
+            <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.5} />
             {competition.exhibition_date}
           </span>
           <span className="text-border">|</span>
           <span className="flex items-center gap-1.5">
-            <MapPin className="h-4 w-4" strokeWidth={1.5} />
+            <MapPin className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.5} />
             {competition.venue_location}
           </span>
           <span className="text-border">|</span>
           <span className="flex items-center gap-1.5">
-            <Trophy className="h-4 w-4" strokeWidth={1.5} />
+            <Trophy className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.5} />
             {competition.reward_pool}
           </span>
         </div>
 
         {/* Patrons Row */}
         {competition.patron_entities && Array.isArray(competition.patron_entities) && (
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-3 sm:gap-4">
             {(competition.patron_entities as string[]).map((patron, i) => (
               <span
                 key={i}
@@ -258,8 +258,8 @@ const CompetitionCard = ({ competition }: { competition: Competition }) => {
           </div>
         )}
 
-        {/* Hover CTA */}
-        <div className="flex translate-y-4 items-center gap-2 opacity-0 transition-all duration-500 ease-in-out group-hover:translate-y-0 group-hover:opacity-100 will-change-transform">
+        {/* CTA - always visible on mobile, hover on desktop */}
+        <div className="flex items-center gap-2 sm:translate-y-4 sm:opacity-0 transition-all duration-500 ease-in-out sm:group-hover:translate-y-0 sm:group-hover:opacity-100 will-change-transform">
           <button className="flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90">
             {ctaLabel}
             <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
@@ -272,7 +272,8 @@ const CompetitionCard = ({ competition }: { competition: Competition }) => {
               className="flex items-center gap-2 rounded-full border border-border/50 bg-white/50 px-5 py-2.5 text-sm font-medium text-muted-foreground backdrop-blur-xl transition-colors hover:text-foreground"
             >
               <ExternalLink className="h-4 w-4" strokeWidth={1.5} />
-              Examine Provenance
+              <span className="hidden sm:inline">Examine Provenance</span>
+              <span className="sm:hidden">Source</span>
             </a>
           )}
         </div>
