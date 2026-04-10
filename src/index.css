@@ -4,44 +4,44 @@
 
 @layer base {
   :root {
-    --background: 40 20% 97%;
-    --foreground: 220 20% 14%;
+    --background: 40 24% 97%;
+    --foreground: 220 22% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 20% 14%;
+    --card-foreground: 220 22% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 14%;
+    --popover-foreground: 220 22% 12%;
 
-    --primary: 152 56% 38%;
+    --primary: 152 44% 32%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 40 15% 93%;
-    --secondary-foreground: 220 20% 14%;
+    --secondary: 40 18% 94%;
+    --secondary-foreground: 220 22% 12%;
 
-    --muted: 40 10% 92%;
-    --muted-foreground: 220 8% 52%;
+    --muted: 40 12% 93%;
+    --muted-foreground: 220 10% 46%;
 
-    --accent: 152 56% 38%;
+    --accent: 152 44% 32%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 40 12% 89%;
-    --input: 40 12% 89%;
-    --ring: 152 56% 38%;
+    --border: 40 14% 90%;
+    --input: 40 14% 90%;
+    --ring: 152 44% 32%;
 
-    --radius: 0.75rem;
+    --radius: 0.875rem;
 
-    --sidebar-background: 40 15% 95%;
-    --sidebar-foreground: 220 20% 14%;
-    --sidebar-primary: 152 56% 38%;
+    --sidebar-background: 40 18% 96%;
+    --sidebar-foreground: 220 22% 12%;
+    --sidebar-primary: 152 44% 32%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 40 10% 92%;
-    --sidebar-accent-foreground: 220 20% 14%;
-    --sidebar-border: 40 12% 89%;
-    --sidebar-ring: 152 56% 38%;
+    --sidebar-accent: 40 12% 93%;
+    --sidebar-accent-foreground: 220 22% 12%;
+    --sidebar-border: 40 14% 90%;
+    --sidebar-ring: 152 44% 32%;
   }
 }
 
@@ -66,10 +66,15 @@
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background: linear-gradient(180deg, hsl(40 25% 98%) 0%, hsl(40 15% 95%) 50%, hsl(35 12% 93%) 100%);
+    background: hsl(40 24% 97%);
     min-height: 100vh;
+  }
+
+  .font-display {
+    font-family: 'DM Serif Display', Georgia, serif;
   }
 }
