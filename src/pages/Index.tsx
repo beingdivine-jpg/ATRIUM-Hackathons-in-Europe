@@ -128,24 +128,24 @@ const Index = () => {
 
       {/* Hero */}
       <section className="flex min-h-[60vh] sm:min-h-[70vh] flex-col items-center justify-center px-5 sm:px-4">
-        <p className="mb-4 text-sm font-medium uppercase tracking-[0.3em] text-muted-foreground">
+        <p className="mb-6 rounded-full border border-border/40 px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.35em] text-muted-foreground">
           Atrium Europe
         </p>
-        <h1 className="text-center text-5xl font-bold tracking-tight sm:text-8xl lg:text-9xl">
-          Build Europe.
+        <h1 className="text-center font-display text-5xl tracking-tight sm:text-8xl lg:text-9xl">
+          Build <em className="text-primary">Europe.</em>
         </h1>
-        <p className="mt-4 max-w-xl text-center text-base sm:text-lg text-muted-foreground">
-          Find the elite hackathons, buildathons, and innovation challenges shaping the future of European tech.
+        <p className="mt-5 max-w-md text-center text-base sm:text-lg leading-relaxed text-muted-foreground font-light">
+          Discover the most prestigious hackathons, buildathons, and innovation challenges shaping European tech.
         </p>
-        <div className="mt-8 sm:mt-10 w-full max-w-xl">
-          <div className="flex items-center gap-3 rounded-full border border-border/50 bg-white/70 px-5 sm:px-6 py-3.5 sm:py-4 shadow-lg shadow-black/[0.03] backdrop-blur-xl">
-            <Search className="h-5 w-5 shrink-0 text-muted-foreground" strokeWidth={1.5} />
+        <div className="mt-10 sm:mt-12 w-full max-w-xl">
+          <div className="flex items-center gap-3 rounded-2xl border border-border/30 bg-white/80 px-5 sm:px-6 py-4 sm:py-4.5 shadow-sm backdrop-blur-xl transition-shadow focus-within:shadow-md focus-within:border-border/50">
+            <Search className="h-5 w-5 shrink-0 text-muted-foreground/60" strokeWidth={1.5} />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by city or competition type…"
-              className="w-full bg-transparent text-base text-foreground placeholder:text-muted-foreground outline-none"
+              className="w-full bg-transparent text-base text-foreground placeholder:text-muted-foreground/50 outline-none"
             />
           </div>
         </div>
@@ -206,52 +206,43 @@ const CompetitionCard = ({ competition }: { competition: Competition }) => {
   );
 
   return (
-    <article className="group relative overflow-hidden rounded-2xl border border-border/40 bg-card shadow-md shadow-black/[0.04] transition-all duration-500 ease-in-out sm:hover:scale-[1.02] hover:shadow-xl hover:shadow-black/[0.07] will-change-transform">
-      {/* Geometric decoration */}
-      <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full border border-foreground/[0.04] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-      <div className="absolute -bottom-6 -left-6 h-24 w-24 rounded-full border border-foreground/[0.04] opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
-
-      <div className="relative flex flex-col gap-4 sm:gap-6 p-5 sm:p-10">
+    <article className="group relative overflow-hidden rounded-3xl border border-border/20 bg-card shadow-sm transition-all duration-500 ease-in-out sm:hover:scale-[1.015] hover:shadow-lg hover:border-border/40 will-change-transform">
+      <div className="relative flex flex-col gap-5 sm:gap-7 p-6 sm:p-10">
         {/* Format badge */}
-        <span className="w-fit rounded-full border border-border/40 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+        <span className="w-fit rounded-full border border-border/30 px-3.5 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
           {FORMAT_LABELS[competition.format_type]}
         </span>
 
         {/* Title */}
-        <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold tracking-tighter text-foreground">
+        <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-foreground leading-[1.1]">
           {competition.title}
         </h2>
 
         {/* Metadata bar */}
-        <div className="flex flex-wrap items-center gap-x-3 sm:gap-x-4 gap-y-1.5 font-mono text-xs sm:text-sm text-muted-foreground">
+        <div className="flex flex-wrap items-center gap-x-4 sm:gap-x-5 gap-y-2 text-[13px] text-muted-foreground">
           <span className="flex items-center gap-1.5">
-            <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.5} />
-            {FORMAT_LABELS[competition.format_type]}
-          </span>
-          <span className="text-border">|</span>
-          <span className="flex items-center gap-1.5">
-            <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.5} />
+            <Calendar className="h-4 w-4 text-muted-foreground/50" strokeWidth={1.5} />
             {competition.exhibition_date}
           </span>
-          <span className="text-border">|</span>
+          <span className="h-3 w-px bg-border" />
           <span className="flex items-center gap-1.5">
-            <MapPin className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.5} />
+            <MapPin className="h-4 w-4 text-muted-foreground/50" strokeWidth={1.5} />
             {competition.venue_location}
           </span>
-          <span className="text-border">|</span>
-          <span className="flex items-center gap-1.5">
-            <Trophy className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.5} />
+          <span className="h-3 w-px bg-border" />
+          <span className="flex items-center gap-1.5 font-medium text-foreground">
+            <Trophy className="h-4 w-4 text-primary/60" strokeWidth={1.5} />
             {competition.reward_pool}
           </span>
         </div>
 
         {/* Patrons Row */}
         {competition.patron_entities && Array.isArray(competition.patron_entities) && (
-          <div className="flex flex-wrap gap-3 sm:gap-4">
+          <div className="flex flex-wrap gap-x-4 gap-y-1">
             {(competition.patron_entities as string[]).map((patron, i) => (
               <span
                 key={i}
-                className="text-xs font-medium uppercase tracking-wider text-muted-foreground/40 transition-all duration-500 group-hover:text-muted-foreground"
+                className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground/30 transition-colors duration-500 group-hover:text-muted-foreground/60"
               >
                 {patron}
               </span>
@@ -259,9 +250,9 @@ const CompetitionCard = ({ competition }: { competition: Competition }) => {
           </div>
         )}
 
-        {/* CTA - always visible on mobile, hover on desktop */}
-        <div className="flex items-center gap-2 sm:translate-y-4 sm:opacity-0 transition-all duration-500 ease-in-out sm:group-hover:translate-y-0 sm:group-hover:opacity-100 will-change-transform">
-          <button className="flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90">
+        {/* CTA - always visible on mobile, hover reveal on desktop */}
+        <div className="flex items-center gap-3 pt-1 sm:translate-y-3 sm:opacity-0 transition-all duration-500 ease-out sm:group-hover:translate-y-0 sm:group-hover:opacity-100 will-change-transform">
+          <button className="flex items-center gap-2.5 rounded-xl bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.97]">
             {ctaLabel}
             <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
           </button>
@@ -270,10 +261,10 @@ const CompetitionCard = ({ competition }: { competition: Competition }) => {
               href={competition.provenance_link}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 rounded-full border border-border/50 bg-white/50 px-5 py-2.5 text-sm font-medium text-muted-foreground backdrop-blur-xl transition-colors hover:text-foreground"
+              className="flex items-center gap-2 rounded-xl border border-border/30 bg-white/60 px-5 py-3 text-sm font-medium text-muted-foreground backdrop-blur-xl transition-all hover:text-foreground hover:border-border/50"
             >
               <ExternalLink className="h-4 w-4" strokeWidth={1.5} />
-              <span className="hidden sm:inline">Examine Provenance</span>
+              <span className="hidden sm:inline">Provenance</span>
               <span className="sm:hidden">Source</span>
             </a>
           )}
