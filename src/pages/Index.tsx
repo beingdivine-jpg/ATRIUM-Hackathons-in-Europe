@@ -127,18 +127,18 @@ const Index = () => {
       </div>
 
       {/* Hero */}
-      <section className="flex min-h-[70vh] flex-col items-center justify-center px-4">
+      <section className="flex min-h-[60vh] sm:min-h-[70vh] flex-col items-center justify-center px-5 sm:px-4">
         <p className="mb-4 text-sm font-medium uppercase tracking-[0.3em] text-muted-foreground">
           Atrium Europe
         </p>
-        <h1 className="text-center text-6xl font-bold tracking-tight sm:text-8xl lg:text-9xl">
+        <h1 className="text-center text-5xl font-bold tracking-tight sm:text-8xl lg:text-9xl">
           Build Europe.
         </h1>
-        <p className="mt-4 max-w-xl text-center text-lg text-muted-foreground">
+        <p className="mt-4 max-w-xl text-center text-base sm:text-lg text-muted-foreground">
           Find the elite hackathons, buildathons, and innovation challenges shaping the future of European tech.
         </p>
-        <div className="mt-10 w-full max-w-xl">
-          <div className="flex items-center gap-3 rounded-full border border-border/50 bg-white/70 px-6 py-4 shadow-lg shadow-black/[0.03] backdrop-blur-xl">
+        <div className="mt-8 sm:mt-10 w-full max-w-xl">
+          <div className="flex items-center gap-3 rounded-full border border-border/50 bg-white/70 px-5 sm:px-6 py-3.5 sm:py-4 shadow-lg shadow-black/[0.03] backdrop-blur-xl">
             <Search className="h-5 w-5 shrink-0 text-muted-foreground" strokeWidth={1.5} />
             <input
               type="text"
@@ -152,8 +152,8 @@ const Index = () => {
       </section>
 
       {/* Gallery */}
-      <section className="mx-auto max-w-4xl px-4 pb-32">
-        <div className="flex flex-col gap-8">
+      <section className="mx-auto max-w-4xl px-4 pb-28 sm:pb-32">
+        <div className="flex flex-col gap-6 sm:gap-8">
           {isLoading ? (
             <p className="py-20 text-center text-lg text-muted-foreground">
               Loading the Gallery…
@@ -171,25 +171,26 @@ const Index = () => {
       </section>
 
       {/* Command Pill */}
-      <nav className="fixed bottom-8 left-1/2 z-50 -translate-x-1/2" aria-label="Filter competitions">
-        <div className="flex items-center gap-1 rounded-full border border-border/50 bg-white/70 px-2 py-2 shadow-xl shadow-black/[0.06] backdrop-blur-xl">
+      <nav className="fixed bottom-6 sm:bottom-8 left-1/2 z-50 -translate-x-1/2 w-[calc(100%-2rem)] max-w-fit" aria-label="Filter competitions">
+        <div className="flex items-center gap-0.5 sm:gap-1 rounded-full border border-border/50 bg-white/70 px-1.5 sm:px-2 py-1.5 sm:py-2 shadow-xl shadow-black/[0.06] backdrop-blur-xl">
           {([
-            { key: "all" as Filter, label: "All", icon: null },
-            { key: "hackathon" as Filter, label: "Hackathons", icon: Zap },
-            { key: "buildathon" as Filter, label: "Buildathons", icon: Calendar },
-            { key: "innovation_challenge" as Filter, label: "Challenges", icon: Trophy },
-          ]).map(({ key, label, icon: Icon }) => (
+            { key: "all" as Filter, label: "All", mobileLabel: "All", icon: null },
+            { key: "hackathon" as Filter, label: "Hackathons", mobileLabel: "Hack", icon: Zap },
+            { key: "buildathon" as Filter, label: "Buildathons", mobileLabel: "Build", icon: Calendar },
+            { key: "innovation_challenge" as Filter, label: "Challenges", mobileLabel: "Challenge", icon: Trophy },
+          ]).map(({ key, label, mobileLabel, icon: Icon }) => (
             <button
               key={key}
               onClick={() => setFilter(key)}
-              className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 ${
+              className={`flex items-center gap-1 sm:gap-2 rounded-full px-2.5 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-all duration-300 ${
                 filter === key
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              {Icon && <Icon className="h-4 w-4" strokeWidth={1.5} />}
-              <span>{label}</span>
+              {Icon && <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.5} />}
+              <span className="hidden sm:inline">{label}</span>
+              <span className="sm:hidden">{mobileLabel}</span>
             </button>
           ))}
         </div>
@@ -205,48 +206,48 @@ const CompetitionCard = ({ competition }: { competition: Competition }) => {
   );
 
   return (
-    <article className="group relative overflow-hidden rounded-2xl border border-border/40 bg-card shadow-md shadow-black/[0.04] transition-all duration-500 ease-in-out hover:scale-[1.02] hover:shadow-xl hover:shadow-black/[0.07] will-change-transform">
+    <article className="group relative overflow-hidden rounded-2xl border border-border/40 bg-card shadow-md shadow-black/[0.04] transition-all duration-500 ease-in-out sm:hover:scale-[1.02] hover:shadow-xl hover:shadow-black/[0.07] will-change-transform">
       {/* Geometric decoration */}
       <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full border border-foreground/[0.04] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
       <div className="absolute -bottom-6 -left-6 h-24 w-24 rounded-full border border-foreground/[0.04] opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
 
-      <div className="relative flex flex-col gap-6 p-8 sm:p-10">
+      <div className="relative flex flex-col gap-4 sm:gap-6 p-5 sm:p-10">
         {/* Format badge */}
         <span className="w-fit rounded-full border border-border/40 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
           {FORMAT_LABELS[competition.format_type]}
         </span>
 
         {/* Title */}
-        <h2 className="text-3xl font-bold tracking-tighter text-foreground sm:text-4xl lg:text-5xl">
+        <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold tracking-tighter text-foreground">
           {competition.title}
         </h2>
 
         {/* Metadata bar */}
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-sm text-muted-foreground">
+        <div className="flex flex-wrap items-center gap-x-3 sm:gap-x-4 gap-y-1.5 font-mono text-xs sm:text-sm text-muted-foreground">
           <span className="flex items-center gap-1.5">
-            <Zap className="h-4 w-4" strokeWidth={1.5} />
+            <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.5} />
             {FORMAT_LABELS[competition.format_type]}
           </span>
           <span className="text-border">|</span>
           <span className="flex items-center gap-1.5">
-            <Calendar className="h-4 w-4" strokeWidth={1.5} />
+            <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.5} />
             {competition.exhibition_date}
           </span>
           <span className="text-border">|</span>
           <span className="flex items-center gap-1.5">
-            <MapPin className="h-4 w-4" strokeWidth={1.5} />
+            <MapPin className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.5} />
             {competition.venue_location}
           </span>
           <span className="text-border">|</span>
           <span className="flex items-center gap-1.5">
-            <Trophy className="h-4 w-4" strokeWidth={1.5} />
+            <Trophy className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.5} />
             {competition.reward_pool}
           </span>
         </div>
 
         {/* Patrons Row */}
         {competition.patron_entities && Array.isArray(competition.patron_entities) && (
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-3 sm:gap-4">
             {(competition.patron_entities as string[]).map((patron, i) => (
               <span
                 key={i}
@@ -258,8 +259,8 @@ const CompetitionCard = ({ competition }: { competition: Competition }) => {
           </div>
         )}
 
-        {/* Hover CTA */}
-        <div className="flex translate-y-4 items-center gap-2 opacity-0 transition-all duration-500 ease-in-out group-hover:translate-y-0 group-hover:opacity-100 will-change-transform">
+        {/* CTA - always visible on mobile, hover on desktop */}
+        <div className="flex items-center gap-2 sm:translate-y-4 sm:opacity-0 transition-all duration-500 ease-in-out sm:group-hover:translate-y-0 sm:group-hover:opacity-100 will-change-transform">
           <button className="flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90">
             {ctaLabel}
             <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
@@ -272,7 +273,8 @@ const CompetitionCard = ({ competition }: { competition: Competition }) => {
               className="flex items-center gap-2 rounded-full border border-border/50 bg-white/50 px-5 py-2.5 text-sm font-medium text-muted-foreground backdrop-blur-xl transition-colors hover:text-foreground"
             >
               <ExternalLink className="h-4 w-4" strokeWidth={1.5} />
-              Examine Provenance
+              <span className="hidden sm:inline">Examine Provenance</span>
+              <span className="sm:hidden">Source</span>
             </a>
           )}
         </div>
