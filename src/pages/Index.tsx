@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, Calendar, MapPin, Trophy, ArrowRight, ExternalLink, Zap } from "lucide-react";
+import { Search, Calendar, MapPin, Trophy, ArrowRight, ExternalLink } from "lucide-react";
 
 type CompetitionFormat = "hackathon" | "buildathon" | "innovation_challenge";
 
@@ -127,41 +127,34 @@ const Index = () => {
       </div>
 
       {/* Hero */}
-      <section className="flex min-h-[60vh] sm:min-h-[70vh] flex-col items-center justify-center px-5 sm:px-4">
-        <p className="mb-6 rounded-full border border-border/40 px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.35em] text-muted-foreground">
-          Atrium Europe
-        </p>
-        <h1 className="text-center font-display text-5xl tracking-tight sm:text-8xl lg:text-9xl">
-          Build <em className="text-primary">Europe.</em>
+      <section className="flex min-h-[55vh] sm:min-h-[65vh] flex-col items-center justify-center px-6">
+        <h1 className="text-center text-[2.75rem] font-extrabold leading-[1.05] tracking-tight text-foreground sm:text-7xl lg:text-8xl">
+          Build Europe.
         </h1>
-        <p className="mt-5 max-w-md text-center text-base sm:text-lg leading-relaxed text-muted-foreground font-light">
-          Discover the most prestigious hackathons, buildathons, and innovation challenges shaping European tech.
+        <p className="mt-5 max-w-lg text-center text-[17px] leading-relaxed text-muted-foreground">
+          The curated directory of hackathons, buildathons, and innovation challenges across Europe.
         </p>
-        <div className="mt-10 sm:mt-12 w-full max-w-xl">
-          <div className="flex items-center gap-3 rounded-2xl border border-border/30 bg-white/80 px-5 sm:px-6 py-4 sm:py-4.5 shadow-sm backdrop-blur-xl transition-shadow focus-within:shadow-md focus-within:border-border/50">
-            <Search className="h-5 w-5 shrink-0 text-muted-foreground/60" strokeWidth={1.5} />
+        <div className="mt-10 w-full max-w-lg">
+          <div className="flex items-center gap-3 rounded-full border border-border bg-background px-5 py-3.5 transition-all focus-within:border-foreground/20 focus-within:shadow-sm">
+            <Search className="h-[18px] w-[18px] shrink-0 text-muted-foreground" strokeWidth={2} />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by city or competition type…"
-              className="w-full bg-transparent text-base text-foreground placeholder:text-muted-foreground/50 outline-none"
+              placeholder="Search by city or type..."
+              className="w-full bg-transparent text-[15px] text-foreground placeholder:text-muted-foreground/60 outline-none"
             />
           </div>
         </div>
       </section>
 
       {/* Gallery */}
-      <section className="mx-auto max-w-4xl px-4 pb-28 sm:pb-32">
-        <div className="flex flex-col gap-6 sm:gap-8">
+      <section className="mx-auto max-w-3xl px-5 pb-28 sm:pb-32">
+        <div className="flex flex-col gap-5">
           {isLoading ? (
-            <p className="py-20 text-center text-lg text-muted-foreground">
-              Loading the Gallery…
-            </p>
+            <p className="py-20 text-center text-muted-foreground">Loading…</p>
           ) : filtered.length === 0 ? (
-            <p className="py-20 text-center text-lg text-muted-foreground">
-              No competitions found. Try adjusting your search.
-            </p>
+            <p className="py-20 text-center text-muted-foreground">No competitions found.</p>
           ) : (
             filtered.map((competition) => (
               <CompetitionCard key={competition.id} competition={competition} />
@@ -170,27 +163,25 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Command Pill */}
-      <nav className="fixed bottom-6 sm:bottom-8 left-1/2 z-50 -translate-x-1/2 w-[calc(100%-2rem)] max-w-fit" aria-label="Filter competitions">
-        <div className="flex items-center gap-0.5 sm:gap-1 rounded-full border border-border/50 bg-white/70 px-1.5 sm:px-2 py-1.5 sm:py-2 shadow-xl shadow-black/[0.06] backdrop-blur-xl">
+      {/* Filter Bar */}
+      <nav className="fixed bottom-6 sm:bottom-8 left-1/2 z-50 -translate-x-1/2" aria-label="Filter competitions">
+        <div className="flex items-center rounded-full border border-border bg-background/95 px-1 py-1 shadow-lg shadow-black/[0.08] backdrop-blur-xl">
           {([
-            { key: "all" as Filter, label: "All", mobileLabel: "All", icon: null },
-            { key: "hackathon" as Filter, label: "Hackathons", mobileLabel: "Hack", icon: Zap },
-            { key: "buildathon" as Filter, label: "Buildathons", mobileLabel: "Build", icon: Calendar },
-            { key: "innovation_challenge" as Filter, label: "Challenges", mobileLabel: "Challenge", icon: Trophy },
-          ]).map(({ key, label, mobileLabel, icon: Icon }) => (
+            { key: "all" as Filter, label: "All" },
+            { key: "hackathon" as Filter, label: "Hackathons" },
+            { key: "buildathon" as Filter, label: "Buildathons" },
+            { key: "innovation_challenge" as Filter, label: "Challenges" },
+          ]).map(({ key, label }) => (
             <button
               key={key}
               onClick={() => setFilter(key)}
-              className={`flex items-center gap-1 sm:gap-2 rounded-full px-2.5 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-all duration-300 ${
+              className={`rounded-full px-3.5 sm:px-5 py-2 text-[13px] font-medium transition-all ${
                 filter === key
-                  ? "bg-primary text-primary-foreground"
+                  ? "bg-foreground text-background"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              {Icon && <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.5} />}
-              <span className="hidden sm:inline">{label}</span>
-              <span className="sm:hidden">{mobileLabel}</span>
+              {label}
             </button>
           ))}
         </div>
@@ -200,72 +191,58 @@ const Index = () => {
 };
 
 const CompetitionCard = ({ competition }: { competition: Competition }) => {
-  const ctaLabel = useMemo(
-    () => CTA_OPTIONS[Math.floor(Math.random() * CTA_OPTIONS.length)],
-    []
-  );
-
   return (
-    <article className="group relative overflow-hidden rounded-3xl border border-border/20 bg-card shadow-sm transition-all duration-500 ease-in-out sm:hover:scale-[1.015] hover:shadow-lg hover:border-border/40 will-change-transform">
-      <div className="relative flex flex-col gap-5 sm:gap-7 p-6 sm:p-10">
-        {/* Format badge */}
-        <span className="w-fit rounded-full border border-border/30 px-3.5 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
-          {FORMAT_LABELS[competition.format_type]}
-        </span>
-
+    <article className="group rounded-2xl border border-border bg-card p-6 sm:p-8 transition-all duration-300 hover:border-foreground/15 hover:shadow-md">
+      <div className="flex flex-col gap-3">
         {/* Title */}
-        <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-foreground leading-[1.1]">
+        <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
           {competition.title}
         </h2>
 
-        {/* Metadata bar */}
-        <div className="flex flex-wrap items-center gap-x-4 sm:gap-x-5 gap-y-2 text-[13px] text-muted-foreground">
+        {/* Metadata */}
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[14px] text-muted-foreground">
           <span className="flex items-center gap-1.5">
-            <Calendar className="h-4 w-4 text-muted-foreground/50" strokeWidth={1.5} />
+            <Calendar className="h-[15px] w-[15px]" strokeWidth={1.5} />
             {competition.exhibition_date}
           </span>
-          <span className="h-3 w-px bg-border" />
           <span className="flex items-center gap-1.5">
-            <MapPin className="h-4 w-4 text-muted-foreground/50" strokeWidth={1.5} />
+            <MapPin className="h-[15px] w-[15px]" strokeWidth={1.5} />
             {competition.venue_location}
           </span>
-          <span className="h-3 w-px bg-border" />
-          <span className="flex items-center gap-1.5 font-medium text-foreground">
-            <Trophy className="h-4 w-4 text-primary/60" strokeWidth={1.5} />
+          <span className="font-medium text-foreground">
             {competition.reward_pool}
           </span>
         </div>
 
-        {/* Patrons Row */}
-        {competition.patron_entities && Array.isArray(competition.patron_entities) && (
-          <div className="flex flex-wrap gap-x-4 gap-y-1">
-            {(competition.patron_entities as string[]).map((patron, i) => (
-              <span
-                key={i}
-                className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground/30 transition-colors duration-500 group-hover:text-muted-foreground/60"
-              >
+        {/* Type + Patrons */}
+        <div className="flex flex-wrap items-center gap-2 pt-1">
+          <span className="rounded-full bg-secondary px-3 py-1 text-[12px] font-medium text-secondary-foreground">
+            {FORMAT_LABELS[competition.format_type]}
+          </span>
+          {competition.patron_entities && Array.isArray(competition.patron_entities) && (
+            (competition.patron_entities as string[]).map((patron, i) => (
+              <span key={i} className="text-[12px] text-muted-foreground/50">
                 {patron}
               </span>
-            ))}
-          </div>
-        )}
+            ))
+          )}
+        </div>
 
-        {/* CTA - always visible on mobile, hover reveal on desktop */}
-        <div className="flex items-center gap-3 pt-1 sm:translate-y-3 sm:opacity-0 transition-all duration-500 ease-out sm:group-hover:translate-y-0 sm:group-hover:opacity-100 will-change-transform">
-          <button className="flex items-center gap-2.5 rounded-xl bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.97]">
-            {ctaLabel}
-            <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
+        {/* Actions */}
+        <div className="flex items-center gap-2.5 pt-2 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
+          <button className="flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-[13px] font-medium text-background transition-all hover:opacity-80 active:scale-[0.97]">
+            View details
+            <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} />
           </button>
           {competition.provenance_link && (
             <a
               href={competition.provenance_link}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 rounded-xl border border-border/30 bg-white/60 px-5 py-3 text-sm font-medium text-muted-foreground backdrop-blur-xl transition-all hover:text-foreground hover:border-border/50"
+              className="flex items-center gap-1.5 rounded-full border border-border px-4 py-2.5 text-[13px] font-medium text-muted-foreground transition-all hover:text-foreground hover:border-foreground/20"
             >
-              <ExternalLink className="h-4 w-4" strokeWidth={1.5} />
-              <span className="hidden sm:inline">Provenance</span>
-              <span className="sm:hidden">Source</span>
+              <ExternalLink className="h-3.5 w-3.5" strokeWidth={2} />
+              Source
             </a>
           )}
         </div>

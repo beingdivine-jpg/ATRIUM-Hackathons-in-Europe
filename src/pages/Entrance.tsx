@@ -32,67 +32,51 @@ const Entrance = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-5">
-      {/* Geometric decorations */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute -right-32 -top-32 h-96 w-96 rounded-full border border-foreground/[0.02]" />
-        <div className="absolute -bottom-20 -left-20 h-64 w-64 rounded-full border border-foreground/[0.02]" />
-      </div>
-
+    <div className="flex min-h-screen items-center justify-center bg-background px-6">
       <motion.form
         onSubmit={handleLogin}
-        initial={{ opacity: 0, y: 20, scale: 0.98 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="relative w-full max-w-sm space-y-10"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className="w-full max-w-sm space-y-8"
       >
         <div className="text-center">
-          <p className="rounded-full border border-border/30 inline-block px-4 py-1.5 text-[10px] font-medium uppercase tracking-[0.4em] text-muted-foreground mb-8">
+          <p className="text-[13px] font-medium text-muted-foreground mb-3">
             Atrium Europe
           </p>
-          <h1 className="font-display text-4xl text-foreground">
-            Welcome <em className="text-primary">back.</em>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">
+            Welcome back.
           </h1>
-          <p className="mt-3 text-sm text-muted-foreground font-light">
-            Authenticate to access The Vault
+          <p className="mt-2 text-[15px] text-muted-foreground">
+            Sign in to access the Vault.
           </p>
         </div>
 
-        <div className="space-y-4">
-          <div>
-            <label className="mb-2 block text-[11px] font-medium uppercase tracking-[0.15em] text-muted-foreground/70">
-              Curator Email
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="curator@atrium.eu"
-              required
-              className="w-full rounded-xl border border-border/30 bg-white/60 px-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground/40 outline-none backdrop-blur-xl transition-all focus:border-primary/30 focus:shadow-sm"
-            />
-          </div>
-          <div>
-            <label className="mb-2 block text-[11px] font-medium uppercase tracking-[0.15em] text-muted-foreground/70">
-              Secret Key
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••••"
-              required
-              className="w-full rounded-xl border border-border/30 bg-white/60 px-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground/40 outline-none backdrop-blur-xl transition-all focus:border-primary/30 focus:shadow-sm"
-            />
-          </div>
+        <div className="space-y-3">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
+            required
+            className="w-full rounded-xl border border-border bg-background px-4 py-3.5 text-[15px] text-foreground placeholder:text-muted-foreground/50 outline-none transition-all focus:border-foreground/20 focus:shadow-sm"
+          />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            required
+            className="w-full rounded-xl border border-border bg-background px-4 py-3.5 text-[15px] text-foreground placeholder:text-muted-foreground/50 outline-none transition-all focus:border-foreground/20 focus:shadow-sm"
+          />
         </div>
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-xl bg-primary px-4 py-4 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.98] disabled:opacity-50"
+          className="w-full rounded-xl bg-foreground px-4 py-3.5 text-[15px] font-medium text-background transition-all hover:opacity-80 active:scale-[0.98] disabled:opacity-50"
         >
-          {loading ? 'Authenticating…' : 'Enter the Atrium'}
+          {loading ? 'Signing in…' : 'Continue'}
         </button>
       </motion.form>
     </div>
