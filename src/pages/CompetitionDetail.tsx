@@ -249,6 +249,12 @@ const CompetitionDetail = () => {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(generateFaqJsonLd(competition)) }}
       />
 
+      {/* Breadcrumb JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+
       {/* Header */}
       <header className="mx-auto max-w-2xl px-5 pt-8 sm:pt-12">
         <Link
@@ -375,6 +381,27 @@ const CompetitionDetail = () => {
               </Button>
             </a>
           </div>
+        )}
+
+        {/* ── Wing Navigation Footer ── */}
+        {wings.length > 0 && (
+          <nav className="mt-16 border-t border-border pt-8" aria-label="Related wings">
+            <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-[0.15em] mb-4">
+              Continue Exploring
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {wings.map((w) => (
+                <Link
+                  key={w.path}
+                  to={w.path}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-[13px] font-medium text-muted-foreground transition-all hover:border-foreground/20 hover:text-foreground"
+                >
+                  {w.label}
+                  <ArrowRight className="h-3 w-3" strokeWidth={2} />
+                </Link>
+              ))}
+            </div>
+          </nav>
         )}
       </main>
     </div>
