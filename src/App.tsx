@@ -11,6 +11,8 @@ import Vault from "./pages/Vault";
 import NotFound from "./pages/NotFound";
 import BulkUpload from "./pages/BulkUpload";
 import CompetitionDetail from "./pages/CompetitionDetail";
+import CategoryWing from "./pages/CategoryWing";
+import CityWing from "./pages/CityWing";
 
 const queryClient = new QueryClient();
 
@@ -23,8 +25,9 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/wing/:category" element={<CategoryWing />} />
+            <Route path="/city/:city" element={<CityWing />} />
             <Route path="/competition/:slug" element={<CompetitionDetail />} />
-            {/* Legacy ID-based route for backward compatibility */}
             <Route path="/competition/id/:id" element={<CompetitionDetail />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/entrance" element={<Entrance />} />
