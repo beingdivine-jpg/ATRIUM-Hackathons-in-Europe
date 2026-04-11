@@ -130,7 +130,7 @@ const Index = () => {
 
       {/* Hero */}
       <section className="relative flex min-h-[55vh] sm:min-h-[65vh] flex-col items-center justify-center px-6">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_hsl(0_0%_18%)_0%,_transparent_70%)] opacity-40 pointer-events-none" />
+        
         <h1 className="z-10 text-center text-[2.75rem] font-extrabold leading-[1.05] tracking-tighter text-foreground sm:text-7xl lg:text-8xl">
           Build Europe.
         </h1>
