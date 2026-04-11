@@ -79,7 +79,7 @@ const Index = () => {
   });
 
   return (
-    <div className="min-h-screen bg-background text-foreground antialiased selection:bg-primary/30">
+    <div className="min-h-screen bg-background text-foreground antialiased">
       <Helmet>
         <title>Atrium Europe — Elite Hackathons, Buildathons & Innovation Challenges</title>
         <meta name="description" content="The curated directory of elite hackathons, buildathons, and innovation challenges across Europe. Discover competitions in AI, blockchain, green tech, and more." />
@@ -130,7 +130,7 @@ const Index = () => {
 
       {/* Hero */}
       <section className="relative flex min-h-[55vh] sm:min-h-[65vh] flex-col items-center justify-center px-6 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-emerald-50/50 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-muted/40 to-transparent pointer-events-none" />
         
         <h1 className="z-10 text-center text-[2.75rem] font-extrabold leading-[1.05] tracking-tighter text-foreground sm:text-7xl lg:text-8xl">
           Build Europe.
