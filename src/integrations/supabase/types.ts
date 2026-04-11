@@ -19,6 +19,7 @@ export type Database = {
           application_link: string | null
           created_at: string
           description: string | null
+          editorial_summary: string | null
           end_date: string | null
           exhibition_date: string
           format_type: Database["public"]["Enums"]["competition_format"]
@@ -40,6 +41,7 @@ export type Database = {
           application_link?: string | null
           created_at?: string
           description?: string | null
+          editorial_summary?: string | null
           end_date?: string | null
           exhibition_date: string
           format_type?: Database["public"]["Enums"]["competition_format"]
@@ -61,6 +63,7 @@ export type Database = {
           application_link?: string | null
           created_at?: string
           description?: string | null
+          editorial_summary?: string | null
           end_date?: string | null
           exhibition_date?: string
           format_type?: Database["public"]["Enums"]["competition_format"]
