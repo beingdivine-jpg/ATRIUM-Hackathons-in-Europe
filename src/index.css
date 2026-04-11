@@ -81,7 +81,7 @@
     left: 0;
     right: 0;
     height: 2px;
-    background: hsl(160 82% 35%);
+    background: hsl(0 0% 7%);
     animation: atrium-pulse 1.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     z-index: 9999;
   }
