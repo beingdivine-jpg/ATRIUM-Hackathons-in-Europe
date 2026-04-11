@@ -12,12 +12,6 @@ import { getCompetitionWings } from '@/lib/wings';
 
 type CompetitionFormat = 'hackathon' | 'buildathon' | 'innovation_challenge';
 
-const FORMAT_LABELS: Record<CompetitionFormat, string> = {
-  hackathon: 'Hackathon',
-  buildathon: 'Buildathon',
-  innovation_challenge: 'Innovation Challenge',
-};
-
 interface CompetitionFull {
   id: string;
   title: string;
