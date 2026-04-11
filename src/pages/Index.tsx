@@ -19,6 +19,7 @@ interface Competition {
   format_type: CompetitionFormat;
   is_remote: boolean | null;
   organizer: string | null;
+  editorial_summary: string | null;
 }
 
 const FORMAT_LABELS: Record<CompetitionFormat, string> = {
@@ -77,7 +78,7 @@ const Index = () => {
 
       const { data, error } = await supabase
         .from("competitions")
-        .select("id, title, slug, exhibition_date, reward_pool, patron_entities, venue_location, provenance_link, format_type, is_remote, organizer")
+        .select("id, title, slug, exhibition_date, reward_pool, patron_entities, venue_location, provenance_link, format_type, is_remote, organizer, editorial_summary")
         .eq("status", "published")
         .gt("exhibition_date", cutoffStr)
         .order("exhibition_date", { ascending: true });
@@ -233,6 +234,13 @@ const CompetitionCard = ({ competition }: { competition: Competition }) => {
             {competition.reward_pool}
           </span>
         </div>
+
+        {/* Editorial Summary */}
+        {competition.editorial_summary && (
+          <p className="text-[13px] leading-relaxed text-muted-foreground line-clamp-3">
+            {competition.editorial_summary}
+          </p>
+        )}
 
         <div className="flex flex-wrap items-center gap-2 pt-1">
           <span className="rounded-full bg-secondary px-3 py-1 text-[12px] font-medium text-secondary-foreground">
