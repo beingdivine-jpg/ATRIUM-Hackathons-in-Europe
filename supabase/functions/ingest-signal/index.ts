@@ -29,6 +29,11 @@ function parsePrizeAmount(pool: string): number {
   return parseInt(cleaned, 10) || 0;
 }
 
+function isOnlineLocation(loc: string): boolean {
+  const lower = loc.toLowerCase();
+  return lower.includes("online") || lower.includes("remote") || lower.includes("virtual");
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });

@@ -78,6 +78,11 @@ function validateChallenge(item: Record<string, unknown>): ValidatedChallenge {
   return { data, errors };
 }
 
+function isOnlineLocation(loc: string): boolean {
+  const lower = loc.toLowerCase();
+  return lower.includes('online') || lower.includes('remote') || lower.includes('virtual');
+}
+
 function toDbRecord(c: IncomingChallenge) {
   return {
     title: c.challengeName,
@@ -92,7 +97,7 @@ function toDbRecord(c: IncomingChallenge) {
     format_type: 'hackathon' as const,
     status: 'pending' as const,
     source_signal: 'gemini-research',
-    is_remote: false,
+    is_remote: isOnlineLocation(c.location),
   };
 }
 
