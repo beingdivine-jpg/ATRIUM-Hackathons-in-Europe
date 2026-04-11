@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, Calendar, MapPin, ExternalLink } from "lucide-react";
+import { Search, Calendar, MapPin, ArrowRight } from "lucide-react";
 
 type CompetitionFormat = "hackathon" | "buildathon" | "innovation_challenge";
 
@@ -228,20 +228,13 @@ const CompetitionCard = ({ competition }: { competition: Competition }) => {
           )}
         </div>
 
-        {/* Source link */}
-        {competition.provenance_link && (
-          <div className="pt-2">
-            <a
-              href={competition.provenance_link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              <ExternalLink className="h-3.5 w-3.5" strokeWidth={2} />
-              Source
-            </a>
-          </div>
-        )}
+        {/* Action */}
+        <div className="pt-2">
+          <button className="flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-[13px] font-medium text-background transition-all hover:opacity-80 active:scale-[0.97]">
+            View details
+            <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} />
+          </button>
+        </div>
       </div>
     </article>
   );
