@@ -269,6 +269,18 @@ const CompetitionDetail = () => {
         <meta property="og:description" content={pageDescription} />
         <meta property="og:type" content="website" />
         <link rel="canonical" href={`https://atrium.eu/competition/${competition.slug || identifier}`} />
+        {/* Hreflang tags for multilingual editions */}
+        {hreflangLinks.map((hl) => (
+          <link key={hl.lang} rel="alternate" hrefLang={hl.lang} href={hl.href} />
+        ))}
+        {/* Smart 410: noindex for dead one-off past events */}
+        {isDeadOneOff && (
+          <meta name="robots" content="noindex, nofollow" />
+        )}
+        {/* Series canonical for recurring events */}
+        {competition.is_recurring && competition.series_slug && (
+          <link rel="alternate" href={`https://atrium.eu/series/${competition.series_slug}`} />
+        )}
         {/* Dynamic SGE / Twitter Summary Tags */}
         <meta name="twitter:label1" content="Prize Pool" />
         <meta name="twitter:data1" content={competition.reward_pool} />
