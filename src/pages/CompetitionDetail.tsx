@@ -220,7 +220,17 @@ const CompetitionDetail = () => {
           </div>
         )}
 
-        {competition.description && (
+        {/* Editorial Summary (primary) */}
+        {(competition as any).editorial_summary && (
+          <div className="mt-8">
+            <p className="text-[15px] leading-relaxed text-foreground/90 italic">
+              {(competition as any).editorial_summary}
+            </p>
+          </div>
+        )}
+
+        {/* Raw description (fallback) */}
+        {!(competition as any).editorial_summary && competition.description && (
           <div className="mt-8">
             <p className="text-[15px] leading-relaxed text-muted-foreground">
               {competition.description}
