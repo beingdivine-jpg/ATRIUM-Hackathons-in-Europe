@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Calendar, MapPin, ArrowRight, Sparkles } from "lucide-react";
+import { Calendar, MapPin, ArrowRight, Trophy } from "lucide-react";
 
 export type CompetitionFormat = "hackathon" | "buildathon" | "innovation_challenge";
 
