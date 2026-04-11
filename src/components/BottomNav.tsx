@@ -23,7 +23,7 @@ const BottomNav = ({ isAdmin }: BottomNavProps) => {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 safe-area-bottom">
       <div className="mx-auto max-w-lg px-4 pb-2 pt-0">
-        <div className="flex items-center justify-around rounded-2xl border border-border bg-background/80 px-2 py-2.5 shadow-sm backdrop-blur-xl">
+        <div className="flex items-center justify-around rounded-2xl border border-[#F1F1F4] bg-white/90 px-2 py-2.5 shadow-xl shadow-zinc-200/50 backdrop-blur-md">
           {items.filter(i => i.show).map(({ to, icon: Icon, label }) => {
             const active = path === to || (to !== '/' && path.startsWith(to));
             return (

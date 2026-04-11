@@ -26,7 +26,7 @@ export const FORMAT_LABELS: Record<CompetitionFormat, string> = {
 
 export const CompetitionCard = ({ competition }: { competition: Competition }) => {
   return (
-    <article className="group rounded-[2rem] border border-border bg-card p-6 sm:p-8 transition-all duration-500 hover:border-foreground/20 hover:scale-[1.01]">
+    <article className="group rounded-[2rem] border border-[#F1F1F4] bg-white p-6 sm:p-8 shadow-xl shadow-zinc-200/50 transition-all duration-500 hover:shadow-2xl hover:shadow-zinc-200/60 hover:scale-[1.01]">
       <div className="flex flex-col gap-3">
         <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
           {competition.title}
