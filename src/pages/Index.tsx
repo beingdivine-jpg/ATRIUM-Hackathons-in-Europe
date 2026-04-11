@@ -70,15 +70,17 @@ const Index = () => {
     },
   });
 
-  const filtered = competitions.filter((c) => {
-    const matchSearch =
-      !search ||
-      c.title.toLowerCase().includes(search.toLowerCase()) ||
-      c.venue_location.toLowerCase().includes(search.toLowerCase()) ||
-      FORMAT_LABELS[c.format_type].toLowerCase().includes(search.toLowerCase());
-    const matchFilter = filter === "all" || c.format_type === filter;
-    return matchSearch && matchFilter;
-  });
+  const filtered = competitions
+    .filter((c) => {
+      const matchSearch =
+        !search ||
+        c.title.toLowerCase().includes(search.toLowerCase()) ||
+        c.venue_location.toLowerCase().includes(search.toLowerCase()) ||
+        FORMAT_LABELS[c.format_type].toLowerCase().includes(search.toLowerCase());
+      const matchFilter = filter === "all" || c.format_type === filter;
+      return matchSearch && matchFilter;
+    })
+    .sort((a, b) => new Date(b.exhibition_date).getTime() - new Date(a.exhibition_date).getTime());
 
   return (
     <div className="min-h-screen bg-background text-foreground">
