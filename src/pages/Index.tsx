@@ -130,25 +130,25 @@ const Index = () => {
       </div>
 
       {/* Hero */}
-      <section className="relative flex min-h-[55vh] sm:min-h-[65vh] flex-col items-center justify-center px-6 pb-4 overflow-hidden">
+      <section className="relative flex flex-col items-center justify-center px-6 pb-2 pt-20 sm:pt-28 overflow-hidden">
         {/* Subtle grey wash — no hue, pure depth */}
         <div className="absolute inset-0 bg-gradient-to-b from-zinc-100/50 via-transparent to-zinc-50/20 pointer-events-none" />
         
-        <h1 className="z-10 text-center text-[2.75rem] font-extrabold leading-[1.05] tracking-[-0.04em] text-[#111111] sm:text-7xl lg:text-8xl">
+        <h1 className="z-10 text-center text-[2.75rem] font-extrabold leading-[1.05] tracking-[-0.04em] text-foreground sm:text-7xl lg:text-8xl">
           Build Europe.
         </h1>
-        <p className="z-10 mt-5 max-w-lg text-center text-[17px] leading-relaxed text-[#52525B]">
+        <p className="z-10 mt-4 max-w-lg text-center text-[17px] leading-relaxed text-muted-foreground">
           The curated directory of hackathons, buildathons, and innovation challenges across Europe.
         </p>
-        <div className="z-10 mt-10 w-full max-w-lg">
-          <div className="flex items-center gap-3 rounded-full border border-[#E4E4E7] bg-white/80 px-5 py-3.5 backdrop-blur-xl transition-all focus-within:border-[#111111]/20 focus-within:shadow-sm shadow-sm shadow-zinc-200/40">
-            <Search className="h-[18px] w-[18px] shrink-0 text-[#52525B]" strokeWidth={1.5} aria-label="Search" />
+        <div className="z-10 mt-8 w-full max-w-lg">
+          <div className="flex items-center gap-3 rounded-full border border-border bg-white/80 px-5 py-3.5 backdrop-blur-xl transition-all focus-within:border-foreground/20 focus-within:shadow-sm shadow-sm shadow-zinc-200/40">
+            <Search className="h-[18px] w-[18px] shrink-0 text-muted-foreground" strokeWidth={1.5} aria-label="Search" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by city or type..."
-              className="w-full bg-transparent text-[15px] text-[#111111] placeholder:text-[#52525B]/50 outline-none"
+              className="w-full bg-transparent text-[15px] text-foreground placeholder:text-muted-foreground/50 outline-none"
             />
           </div>
         </div>
@@ -158,7 +158,7 @@ const Index = () => {
       <PatronRibbon competitions={competitions} />
 
       {/* Gallery */}
-      <section className="mx-auto max-w-3xl px-5 pb-28 sm:pb-32">
+      <section className="mx-auto max-w-3xl px-5 pb-28 sm:pb-32 pt-2">
         <div className="flex flex-col gap-5">
           {isLoading ? (
             <div className="py-20"><div className="atrium-loader" /></div>
