@@ -23,7 +23,9 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/competition/:id" element={<CompetitionDetail />} />
+            <Route path="/competition/:slug" element={<CompetitionDetail />} />
+            {/* Legacy ID-based route for backward compatibility */}
+            <Route path="/competition/id/:id" element={<CompetitionDetail />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/entrance" element={<Entrance />} />
             <Route path="/vault" element={<Vault />} />
