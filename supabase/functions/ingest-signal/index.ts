@@ -70,9 +70,9 @@ Deno.serve(async (req) => {
 
     // Validate required fields
     for (const item of items) {
-      if (!item.title || !item.exhibition_date || !item.reward_pool || !item.venue_location || !item.provenance_link) {
+      if (!item.title || !item.exhibition_date || !item.reward_pool || !item.venue_location || !item.provenance_link || !item.application_link) {
         return new Response(
-          JSON.stringify({ error: "Each item requires: title, exhibition_date, reward_pool, venue_location, provenance_link" }),
+          JSON.stringify({ error: "Each item requires: title, exhibition_date, reward_pool, venue_location, provenance_link, application_link (must be a direct link to the hackathon page, not a listing platform)" }),
           { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
