@@ -1,11 +1,19 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { Competition } from "@/components/CompetitionCard";
 
 interface PatronRibbonProps {
   competitions: Competition[];
 }
 
+const TECH_GIANTS = [
+  "Anthropic", "OpenAI", "Google", "NVIDIA", "Meta", "Lovable",
+  "Microsoft", "AWS", "Apple", "Mistral AI", "Hugging Face",
+  "Cohere", "Perplexity", "Tesla", "DeepMind",
+];
+
 export const PatronRibbon = ({ competitions }: PatronRibbonProps) => {
+  const [paused, setPaused] = useState(false);
+
   const patrons = useMemo(() => {
     const set = new Set<string>();
     for (const c of competitions) {
@@ -19,15 +27,8 @@ export const PatronRibbon = ({ competitions }: PatronRibbonProps) => {
     return Array.from(set).sort();
   }, [competitions]);
 
-  if (patrons.length === 0) return null;
-
-  // Split into two rows
-  const mid = Math.ceil(patrons.length / 2);
-  const row1 = patrons.slice(0, mid);
-  const row2 = patrons.slice(mid);
-
-  const doubled1 = [...row1, ...row1];
-  const doubled2 = [...row2, ...row2];
+  const row1 = patrons.length > 0 ? [...patrons, ...patrons] : [];
+  const row2 = [...TECH_GIANTS, ...TECH_GIANTS];
 
   const maskStyle = {
     maskImage:
@@ -36,29 +37,38 @@ export const PatronRibbon = ({ competitions }: PatronRibbonProps) => {
       "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
   };
 
+  const pauseClass = paused ? "ribbon-paused" : "";
+
   return (
-    <section className="pt-0 pb-6" aria-label="Patron organisations">
+    <section
+      className="pt-0 pb-4"
+      aria-label="Patron organisations"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
       <div className="flex flex-col gap-2" style={maskStyle}>
-        {/* Row 1 */}
-        <div className="relative overflow-hidden">
-          <div className="flex w-max animate-ribbon items-center gap-12">
-            {doubled1.map((name, i) => (
-              <span
-                key={`r1-${name}-${i}`}
-                className="shrink-0 select-none whitespace-nowrap text-[15px] font-semibold tracking-tight text-[#8E8EA0] h-8 flex items-center"
-              >
-                {name}
-              </span>
-            ))}
+        {/* Row 1 — Partners (Left to Right) */}
+        {row1.length > 0 && (
+          <div className="relative overflow-hidden">
+            <div className={`flex w-max animate-ribbon items-center gap-12 ${pauseClass}`}>
+              {row1.map((name, i) => (
+                <span
+                  key={`r1-${name}-${i}`}
+                  className="shrink-0 select-none whitespace-nowrap text-[15px] font-semibold tracking-tight text-foreground/30 hover:text-foreground transition-colors duration-300 h-8 flex items-center"
+                >
+                  {name}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
-        {/* Row 2 */}
+        )}
+        {/* Row 2 — Tech Giants (Right to Left) */}
         <div className="relative overflow-hidden">
-          <div className="flex w-max animate-ribbon-reverse items-center gap-12">
-            {doubled2.map((name, i) => (
+          <div className={`flex w-max animate-ribbon-reverse items-center gap-12 ${pauseClass}`}>
+            {row2.map((name, i) => (
               <span
                 key={`r2-${name}-${i}`}
-                className="shrink-0 select-none whitespace-nowrap text-[15px] font-semibold tracking-tight text-[#8E8EA0] h-8 flex items-center"
+                className="shrink-0 select-none whitespace-nowrap text-[15px] font-semibold tracking-tight text-foreground/30 hover:text-foreground transition-colors duration-300 h-8 flex items-center"
               >
                 {name}
               </span>

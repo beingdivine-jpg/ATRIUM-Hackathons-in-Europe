@@ -110,7 +110,11 @@
   }
 
   .animate-ribbon-reverse {
-    animation: ribbon-scroll-reverse 35s linear infinite;
+    animation: ribbon-scroll-reverse 30s linear infinite;
+  }
+
+  .ribbon-paused {
+    animation-play-state: paused !important;
   }
 
   /* Prevent white flash on page transitions */
