@@ -54,7 +54,12 @@ function generateDetailJsonLd(c: CompetitionFull) {
       : {}),
     offers: {
       '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'EUR',
+      url: c.application_link || c.provenance_link || '',
+      availability: 'https://schema.org/InStock',
       description: `Prize pool: ${c.reward_pool}`,
+      validFrom: c.exhibition_date,
     },
     ...(c.patron_entities && (c.patron_entities as string[]).length > 0
       ? {
@@ -67,10 +72,48 @@ function generateDetailJsonLd(c: CompetitionFull) {
   };
 }
 
-/** Generate a short executive definition (first ~50 words of editorial, or a constructed fallback). */
+function generateFaqJsonLd(c: CompetitionFull) {
+  const dateRange = c.end_date
+    ? `${c.exhibition_date} to ${c.end_date}`
+    : c.exhibition_date;
+
+  const faqs = [
+    {
+      question: `What is the prize pool for ${c.title}?`,
+      answer: `The prize pool for ${c.title} is ${c.reward_pool}.`,
+    },
+    {
+      question: `Where is ${c.title} held?`,
+      answer: c.is_remote
+        ? `${c.title} is held online as a remote ${FORMAT_LABELS[c.format_type].toLowerCase()}.`
+        : `${c.title} takes place in ${c.venue_location}.`,
+    },
+    {
+      question: `When does ${c.title} start?`,
+      answer: `${c.title} runs ${dateRange}.`,
+    },
+    {
+      question: `What is the format of ${c.title}?`,
+      answer: `${c.title} is a ${FORMAT_LABELS[c.format_type].toLowerCase()}${c.is_remote ? ' (online)' : ' (onsite)'}.`,
+    },
+  ];
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: f.answer,
+      },
+    })),
+  };
+}
+
 function getExecutiveDefinition(c: CompetitionFull): string {
   if (c.editorial_summary) {
-    // Take first two sentences or ~60 words
     const sentences = c.editorial_summary.match(/[^.!?]+[.!?]+/g) || [c.editorial_summary];
     let def = '';
     for (const s of sentences) {
@@ -110,7 +153,6 @@ const CompetitionDetail = () => {
     staleTime: 5 * 60 * 1000,
   });
 
-  // Redirect legacy ID URLs to slug URLs
   if (isLegacyId && competition?.slug) {
     navigate(`/competition/${competition.slug}`, { replace: true });
   }
@@ -164,11 +206,23 @@ const CompetitionDetail = () => {
         <meta property="og:description" content={pageDescription} />
         <meta property="og:type" content="website" />
         <link rel="canonical" href={`https://atrium.eu/competition/${competition.slug || identifier}`} />
+        {/* Dynamic SGE / Twitter Summary Tags */}
+        <meta name="twitter:label1" content="Prize Pool" />
+        <meta name="twitter:data1" content={competition.reward_pool} />
+        <meta name="twitter:label2" content="Venue" />
+        <meta name="twitter:data2" content={competition.venue_location} />
       </Helmet>
 
+      {/* Event JSON-LD */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(generateDetailJsonLd(competition)) }}
+      />
+
+      {/* FAQ JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateFaqJsonLd(competition)) }}
       />
 
       {/* Header */}
@@ -204,13 +258,17 @@ const CompetitionDetail = () => {
           {executiveDef}
         </p>
 
-        {/* ── High-Signal Fact Table ── */}
-        <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-y-8 gap-x-6">
-          <FactCell label="Reward Pool" value={competition.reward_pool} />
-          <FactCell label="Format" value={FORMAT_LABELS[competition.format_type]} />
-          <FactCell label="Venue" value={competition.venue_location} />
-          <FactCell label="Tech Stack" value={techStack} />
-        </div>
+        {/* ── High-Signal Fact Table (semantic <table>) ── */}
+        <table className="mt-12 w-full border-collapse" role="presentation" aria-label={`Key facts about ${competition.title}`}>
+          <tbody>
+            <tr className="align-top">
+              <FactCell label="Reward Pool" value={competition.reward_pool} />
+              <FactCell label="Format" value={FORMAT_LABELS[competition.format_type]} />
+              <FactCell label="Venue" value={competition.venue_location} />
+              <FactCell label="Tech Stack" value={techStack} />
+            </tr>
+          </tbody>
+        </table>
 
         {/* Separator */}
         <div className="mt-12 mb-10 h-px bg-border" />
@@ -238,6 +296,16 @@ const CompetitionDetail = () => {
               {competition.reward_pool !== '—' && ` Competitors are vying for a prize pool of ${competition.reward_pool}.`}
             </p>
           </div>
+        </section>
+
+        {/* ── Prize Section ── */}
+        <section className="mb-10">
+          <h3 className="text-[15px] font-semibold text-foreground mb-4">
+            What is the prize for {competition.title}?
+          </h3>
+          <p className="text-[15px] leading-[1.75] text-muted-foreground">
+            The prize pool is {competition.reward_pool}. {competition.application_link ? 'Registration is open via the official event page.' : ''}
+          </p>
         </section>
 
         {/* Tags */}
@@ -289,16 +357,16 @@ const CompetitionDetail = () => {
   );
 };
 
-/** A single cell in the borderless Fact Table. */
+/** Semantic table cell for the Fact Table — museum-like spacing. */
 const FactCell = ({ label, value }: { label: string; value: string }) => (
-  <div className="flex flex-col gap-1">
-    <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-[0.15em]">
+  <td className="py-2 pr-6 sm:pr-8 align-top">
+    <span className="block text-[11px] font-medium text-muted-foreground uppercase tracking-[0.15em] mb-1">
       {label}
-    </p>
-    <p className="text-[15px] font-semibold text-foreground leading-snug">
+    </span>
+    <span className="block text-[15px] font-semibold text-foreground leading-snug">
       {value}
-    </p>
-  </div>
+    </span>
+  </td>
 );
 
 export default CompetitionDetail;
