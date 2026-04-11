@@ -56,18 +56,15 @@ export const CompetitionCard = ({ competition }: { competition: Competition }) =
           </p>
         )}
 
-        <div className="flex flex-wrap items-center gap-2 pt-1">
-          <span className="rounded-full border border-[#E4E4E7] bg-[#F9F9FB] px-3 py-1 text-[12px] font-medium text-[#52525B]">
-            {FORMAT_LABELS[competition.format_type]}
-          </span>
-          {competition.patron_entities && Array.isArray(competition.patron_entities) && (
-            (competition.patron_entities as string[]).map((patron, i) => (
-              <span key={i} className="text-[12px] text-[#52525B]/40 italic">
+        {competition.patron_entities && Array.isArray(competition.patron_entities) && (competition.patron_entities as string[]).length > 0 && (
+          <div className="flex flex-wrap items-center gap-3 pt-0.5">
+            {(competition.patron_entities as string[]).map((patron, i) => (
+              <span key={i} className="text-[12px] text-muted-foreground/50 italic">
                 {patron}
               </span>
-            ))
-          )}
-        </div>
+            ))}
+          </div>
+        )}
 
         <div className="pt-2">
           <Link
