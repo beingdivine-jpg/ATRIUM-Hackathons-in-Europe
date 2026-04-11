@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { PatronRibbon } from "@/components/PatronRibbon";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
@@ -152,6 +153,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Patron Ribbon */}
+      <PatronRibbon competitions={competitions} />
 
       {/* Gallery */}
       <section className="mx-auto max-w-3xl px-5 pb-28 sm:pb-32">
