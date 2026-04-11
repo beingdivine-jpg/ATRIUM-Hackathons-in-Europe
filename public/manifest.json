@@ -4,7 +4,7 @@
   "description": "The curated directory of elite hackathons, buildathons, and innovation challenges across Europe.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#212121",
+  "background_color": "#FFFFFF",
   "theme_color": "#10A37F",
   "icons": [
     {
