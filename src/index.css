@@ -100,8 +100,17 @@
     100% { transform: translateX(-50%); }
   }
 
+  @keyframes ribbon-scroll-reverse {
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+  }
+
   .animate-ribbon {
     animation: ribbon-scroll 30s linear infinite;
+  }
+
+  .animate-ribbon-reverse {
+    animation: ribbon-scroll-reverse 35s linear infinite;
   }
 
   /* Prevent white flash on page transitions */

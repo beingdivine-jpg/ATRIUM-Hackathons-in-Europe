@@ -21,29 +21,49 @@ export const PatronRibbon = ({ competitions }: PatronRibbonProps) => {
 
   if (patrons.length === 0) return null;
 
-  // Double the list for seamless loop
-  const doubled = [...patrons, ...patrons];
+  // Split into two rows
+  const mid = Math.ceil(patrons.length / 2);
+  const row1 = patrons.slice(0, mid);
+  const row2 = patrons.slice(mid);
+
+  const doubled1 = [...row1, ...row1];
+  const doubled2 = [...row2, ...row2];
+
+  const maskStyle = {
+    maskImage:
+      "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
+    WebkitMaskImage:
+      "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
+  };
 
   return (
-    <section className="py-12" aria-label="Patron organisations">
-      <div
-        className="relative overflow-hidden"
-        style={{
-          maskImage:
-            "linear-gradient(to right, transparent, white 20%, white 80%, transparent)",
-          WebkitMaskImage:
-            "linear-gradient(to right, transparent, white 20%, white 80%, transparent)",
-        }}
-      >
-        <div className="flex w-max animate-ribbon items-center gap-12">
-          {doubled.map((name, i) => (
-            <span
-              key={`${name}-${i}`}
-              className="shrink-0 select-none whitespace-nowrap text-[15px] font-semibold tracking-tight text-[#8E8EA0] h-8 flex items-center"
-            >
-              {name}
-            </span>
-          ))}
+    <section className="pt-0 pb-6" aria-label="Patron organisations">
+      <div className="flex flex-col gap-2" style={maskStyle}>
+        {/* Row 1 */}
+        <div className="relative overflow-hidden">
+          <div className="flex w-max animate-ribbon items-center gap-12">
+            {doubled1.map((name, i) => (
+              <span
+                key={`r1-${name}-${i}`}
+                className="shrink-0 select-none whitespace-nowrap text-[15px] font-semibold tracking-tight text-[#8E8EA0] h-8 flex items-center"
+              >
+                {name}
+              </span>
+            ))}
+          </div>
+        </div>
+        {/* Row 2 */}
+        <div className="relative overflow-hidden">
+          <div className="flex w-max animate-ribbon-reverse items-center gap-12">
+            {doubled2.map((name, i) => (
+              <span
+                key={`r2-${name}-${i}`}
+                className="shrink-0 select-none whitespace-nowrap text-[15px] font-semibold tracking-tight text-[#8E8EA0] h-8 flex items-center"
+              >
+                {name}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </section>

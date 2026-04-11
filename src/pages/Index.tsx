@@ -130,7 +130,7 @@ const Index = () => {
       </div>
 
       {/* Hero */}
-      <section className="relative flex min-h-[55vh] sm:min-h-[65vh] flex-col items-center justify-center px-6 overflow-hidden">
+      <section className="relative flex min-h-[55vh] sm:min-h-[65vh] flex-col items-center justify-center px-6 pb-4 overflow-hidden">
         {/* Subtle grey wash — no hue, pure depth */}
         <div className="absolute inset-0 bg-gradient-to-b from-zinc-100/50 via-transparent to-zinc-50/20 pointer-events-none" />
         
