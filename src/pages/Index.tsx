@@ -15,6 +15,7 @@ interface Competition {
   venue_location: string;
   provenance_link: string | null;
   format_type: CompetitionFormat;
+  is_remote: boolean | null;
 }
 
 const FORMAT_LABELS: Record<CompetitionFormat, string> = {
@@ -62,7 +63,7 @@ const Index = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("competitions")
-        .select("id, title, exhibition_date, reward_pool, patron_entities, venue_location, provenance_link, format_type")
+        .select("id, title, exhibition_date, reward_pool, patron_entities, venue_location, provenance_link, format_type, is_remote")
         .eq("status", "published")
         .order("created_at", { ascending: false });
       if (error) throw error;
