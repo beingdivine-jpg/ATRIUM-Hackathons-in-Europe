@@ -11,6 +11,7 @@ import Vault from "./pages/Vault";
 import NotFound from "./pages/NotFound";
 import BulkUpload from "./pages/BulkUpload";
 import CompetitionDetail from "./pages/CompetitionDetail";
+import SeriesRedirect from "./pages/SeriesRedirect";
 import CategoryWing from "./pages/CategoryWing";
 import CityWing from "./pages/CityWing";
 import TagWing from "./pages/TagWing";
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/topic/:tag" element={<TagWing />} />
             <Route path="/competition/:slug" element={<CompetitionDetail />} />
             <Route path="/competition/id/:id" element={<CompetitionDetail />} />
+            <Route path="/series/:seriesSlug" element={<SeriesRedirect />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/entrance" element={<Entrance />} />
             <Route path="/vault" element={<Vault />} />
