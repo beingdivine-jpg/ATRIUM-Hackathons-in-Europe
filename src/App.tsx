@@ -13,6 +13,7 @@ import BulkUpload from "./pages/BulkUpload";
 import CompetitionDetail from "./pages/CompetitionDetail";
 import CategoryWing from "./pages/CategoryWing";
 import CityWing from "./pages/CityWing";
+import TagWing from "./pages/TagWing";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/wing/:category" element={<CategoryWing />} />
             <Route path="/city/:city" element={<CityWing />} />
+            <Route path="/topic/:tag" element={<TagWing />} />
             <Route path="/competition/:slug" element={<CompetitionDetail />} />
             <Route path="/competition/id/:id" element={<CompetitionDetail />} />
             <Route path="/auth" element={<Auth />} />

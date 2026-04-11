@@ -1,19 +1,16 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
 import {
-  ArrowLeft, ExternalLink, Tag, Users, Loader2
+  ArrowLeft, ArrowRight, ExternalLink, Tag, Users, Loader2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { FORMAT_LABELS } from '@/components/CompetitionCard';
+import { getCompetitionWings } from '@/lib/wings';
 
 type CompetitionFormat = 'hackathon' | 'buildathon' | 'innovation_challenge';
-
-const FORMAT_LABELS: Record<CompetitionFormat, string> = {
-  hackathon: 'Hackathon',
-  buildathon: 'Buildathon',
-  innovation_challenge: 'Innovation Challenge',
-};
 
 interface CompetitionFull {
   id: string;
@@ -153,6 +150,22 @@ const CompetitionDetail = () => {
     staleTime: 5 * 60 * 1000,
   });
 
+  // Derive wing links (must be before early returns)
+  const wings = useMemo(() => {
+    if (!competition) return [];
+    const tagWings = getCompetitionWings(competition.tags, competition.title);
+    const formatWing = {
+      label: `The ${FORMAT_LABELS[competition.format_type]} Wing`,
+      path: `/wing/${competition.format_type}`,
+    };
+    const city = competition.venue_location.split(",")[0].trim().toLowerCase().replace(/\s+/g, "-");
+    const cityWing = {
+      label: `Explore ${competition.venue_location.split(",")[0].trim()}`,
+      path: `/city/${city}`,
+    };
+    return [formatWing, cityWing, ...tagWings];
+  }, [competition]);
+
   if (isLegacyId && competition?.slug) {
     navigate(`/competition/${competition.slug}`, { replace: true });
   }
@@ -197,6 +210,17 @@ const CompetitionDetail = () => {
     ? competition.tags.slice(0, 4).join(' · ')
     : '—';
 
+  const parentWing = wings[0];
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://atrium.eu/' },
+      { '@type': 'ListItem', position: 2, name: parentWing?.label || 'Gallery', item: `https://atrium.eu${parentWing?.path || '/'}` },
+      { '@type': 'ListItem', position: 3, name: competition.title, item: `https://atrium.eu/competition/${competition.slug || identifier}` },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Helmet>
@@ -223,6 +247,12 @@ const CompetitionDetail = () => {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(generateFaqJsonLd(competition)) }}
+      />
+
+      {/* Breadcrumb JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
       {/* Header */}
@@ -351,6 +381,27 @@ const CompetitionDetail = () => {
               </Button>
             </a>
           </div>
+        )}
+
+        {/* ── Wing Navigation Footer ── */}
+        {wings.length > 0 && (
+          <nav className="mt-16 border-t border-border pt-8" aria-label="Related wings">
+            <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-[0.15em] mb-4">
+              Continue Exploring
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {wings.map((w) => (
+                <Link
+                  key={w.path}
+                  to={w.path}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-[13px] font-medium text-muted-foreground transition-all hover:border-foreground/20 hover:text-foreground"
+                >
+                  {w.label}
+                  <ArrowRight className="h-3 w-3" strokeWidth={2} />
+                </Link>
+              ))}
+            </div>
+          </nav>
         )}
       </main>
     </div>
