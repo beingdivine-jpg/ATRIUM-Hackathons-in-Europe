@@ -3,8 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
 import {
-  ArrowLeft, Calendar, MapPin, Trophy, ExternalLink,
-  Globe, Tag, Users, Loader2
+  ArrowLeft, ExternalLink, Tag, Users, Loader2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -28,6 +27,7 @@ interface CompetitionFull {
   format_type: CompetitionFormat;
   organizer: string | null;
   description: string | null;
+  editorial_summary: string | null;
   application_link: string | null;
   tags: string[] | null;
   is_remote: boolean | null;
@@ -38,7 +38,7 @@ function generateDetailJsonLd(c: CompetitionFull) {
     '@context': 'https://schema.org',
     '@type': 'Hackathon',
     name: c.title,
-    description: c.description || `${c.title} is a ${FORMAT_LABELS[c.format_type]} in ${c.venue_location}`,
+    description: c.editorial_summary || c.description || `${c.title} is a ${FORMAT_LABELS[c.format_type]} in ${c.venue_location}`,
     location: {
       '@type': c.is_remote ? 'VirtualLocation' : 'Place',
       ...(c.is_remote ? { url: c.application_link || '' } : { name: c.venue_location }),
@@ -67,6 +67,21 @@ function generateDetailJsonLd(c: CompetitionFull) {
   };
 }
 
+/** Generate a short executive definition (first ~50 words of editorial, or a constructed fallback). */
+function getExecutiveDefinition(c: CompetitionFull): string {
+  if (c.editorial_summary) {
+    // Take first two sentences or ~60 words
+    const sentences = c.editorial_summary.match(/[^.!?]+[.!?]+/g) || [c.editorial_summary];
+    let def = '';
+    for (const s of sentences) {
+      if ((def + s).split(/\s+/).length > 60) break;
+      def += s;
+    }
+    return def.trim() || sentences[0].trim();
+  }
+  return `${c.title} is a ${FORMAT_LABELS[c.format_type].toLowerCase()} taking place in ${c.venue_location}, offering a prize pool of ${c.reward_pool}.`;
+}
+
 const CompetitionDetail = () => {
   const { slug, id } = useParams<{ slug?: string; id?: string }>();
   const navigate = useNavigate();
@@ -81,7 +96,6 @@ const CompetitionDetail = () => {
         .select('*')
         .eq('status', 'published');
 
-      // Legacy UUID route → lookup by id; slug route → lookup by slug
       if (isLegacyId) {
         query = query.eq('id', identifier!);
       } else {
@@ -96,7 +110,7 @@ const CompetitionDetail = () => {
     staleTime: 5 * 60 * 1000,
   });
 
-  // Redirect legacy ID URLs to slug URLs for SEO
+  // Redirect legacy ID URLs to slug URLs
   if (isLegacyId && competition?.slug) {
     navigate(`/competition/${competition.slug}`, { replace: true });
   }
@@ -130,11 +144,16 @@ const CompetitionDetail = () => {
   }
 
   const pageTitle = `${competition.title} — ${FORMAT_LABELS[competition.format_type]} | Atrium Europe`;
-  const pageDescription = `${competition.title} in ${competition.venue_location}. Prize pool: ${competition.reward_pool}. ${competition.description?.slice(0, 120) || `A ${FORMAT_LABELS[competition.format_type].toLowerCase()} starting ${competition.exhibition_date}.`}`;
+  const executiveDef = getExecutiveDefinition(competition);
+  const pageDescription = executiveDef.slice(0, 160);
 
   const dateRange = competition.end_date
     ? `${competition.exhibition_date} — ${competition.end_date}`
     : competition.exhibition_date;
+
+  const techStack = competition.tags?.length
+    ? competition.tags.slice(0, 4).join(' · ')
+    : '—';
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -147,7 +166,6 @@ const CompetitionDetail = () => {
         <link rel="canonical" href={`https://atrium.eu/competition/${competition.slug || identifier}`} />
       </Helmet>
 
-      {/* JSON-LD */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(generateDetailJsonLd(competition)) }}
@@ -164,12 +182,13 @@ const CompetitionDetail = () => {
         </Link>
       </header>
 
-      {/* Content */}
       <main className="mx-auto max-w-2xl px-5 pt-8 pb-20">
+        {/* Format badge */}
         <span className="inline-block rounded-full bg-secondary px-3 py-1 text-[12px] font-medium text-secondary-foreground">
           {FORMAT_LABELS[competition.format_type]}
         </span>
 
+        {/* H1 */}
         <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl leading-tight">
           {competition.title}
         </h1>
@@ -180,17 +199,50 @@ const CompetitionDetail = () => {
           </p>
         )}
 
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <MetaItem icon={Calendar} label="Date" value={dateRange} />
-          <MetaItem icon={MapPin} label="Location" value={competition.venue_location} />
-          <MetaItem icon={Trophy} label="Prize Pool" value={competition.reward_pool} />
-          {competition.is_remote && (
-            <MetaItem icon={Globe} label="Format" value="Remote / Online" />
-          )}
+        {/* ── Executive Definition ── */}
+        <p className="mt-6 text-center text-[17px] sm:text-[18px] leading-relaxed text-foreground/90 max-w-xl mx-auto">
+          {executiveDef}
+        </p>
+
+        {/* ── High-Signal Fact Table ── */}
+        <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-y-8 gap-x-6">
+          <FactCell label="Reward Pool" value={competition.reward_pool} />
+          <FactCell label="Format" value={FORMAT_LABELS[competition.format_type]} />
+          <FactCell label="Venue" value={competition.venue_location} />
+          <FactCell label="Tech Stack" value={techStack} />
         </div>
 
+        {/* Separator */}
+        <div className="mt-12 mb-10 h-px bg-border" />
+
+        {/* ── Vision Section ── */}
+        {(competition.editorial_summary || competition.description) && (
+          <section className="mb-10">
+            <h3 className="text-[15px] font-semibold text-foreground mb-4">
+              What is the vision for {competition.title}?
+            </h3>
+            <p className="text-[15px] leading-[1.75] text-muted-foreground">
+              {competition.editorial_summary || competition.description}
+            </p>
+          </section>
+        )}
+
+        {/* ── Participation Section ── */}
+        <section className="mb-10">
+          <h3 className="text-[15px] font-semibold text-foreground mb-4">
+            How can builders participate in this challenge?
+          </h3>
+          <div className="flex flex-col gap-3 text-[15px] leading-[1.75] text-muted-foreground">
+            <p>
+              {competition.title} takes place {competition.is_remote ? 'online' : `in ${competition.venue_location}`} starting {dateRange}.
+              {competition.reward_pool !== '—' && ` Competitors are vying for a prize pool of ${competition.reward_pool}.`}
+            </p>
+          </div>
+        </section>
+
+        {/* Tags */}
         {competition.tags && competition.tags.length > 0 && (
-          <div className="mt-6 flex flex-wrap gap-2">
+          <div className="mb-8 flex flex-wrap gap-2">
             {competition.tags.map((tag, i) => (
               <span
                 key={i}
@@ -203,8 +255,9 @@ const CompetitionDetail = () => {
           </div>
         )}
 
+        {/* Patrons */}
         {competition.patron_entities && Array.isArray(competition.patron_entities) && (competition.patron_entities as string[]).length > 0 && (
-          <div className="mt-6">
+          <div className="mb-8">
             <p className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider mb-2">Patrons</p>
             <div className="flex flex-wrap gap-2">
               {(competition.patron_entities as string[]).map((patron, i) => (
@@ -220,24 +273,7 @@ const CompetitionDetail = () => {
           </div>
         )}
 
-        {/* Editorial Summary (primary) */}
-        {(competition as any).editorial_summary && (
-          <div className="mt-8">
-            <p className="text-[15px] leading-relaxed text-foreground/90 italic">
-              {(competition as any).editorial_summary}
-            </p>
-          </div>
-        )}
-
-        {/* Raw description (fallback) */}
-        {!(competition as any).editorial_summary && competition.description && (
-          <div className="mt-8">
-            <p className="text-[15px] leading-relaxed text-muted-foreground">
-              {competition.description}
-            </p>
-          </div>
-        )}
-
+        {/* CTA */}
         {competition.application_link && (
           <div className="mt-10">
             <a href={competition.application_link} target="_blank" rel="noopener noreferrer">
@@ -253,15 +289,15 @@ const CompetitionDetail = () => {
   );
 };
 
-const MetaItem = ({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value: string }) => (
-  <div className="flex items-start gap-3 rounded-2xl border border-border bg-card p-4">
-    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary">
-      <Icon className="h-4 w-4 text-muted-foreground" strokeWidth={1.5} aria-label={label} />
-    </div>
-    <div>
-      <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">{label}</p>
-      <p className="text-[14px] font-medium text-foreground mt-0.5">{value}</p>
-    </div>
+/** A single cell in the borderless Fact Table. */
+const FactCell = ({ label, value }: { label: string; value: string }) => (
+  <div className="flex flex-col gap-1">
+    <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-[0.15em]">
+      {label}
+    </p>
+    <p className="text-[15px] font-semibold text-foreground leading-snug">
+      {value}
+    </p>
   </div>
 );
 
