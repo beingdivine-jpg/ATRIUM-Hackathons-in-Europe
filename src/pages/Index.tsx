@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import { Search, Calendar, MapPin, ArrowRight } from "lucide-react";
 
@@ -16,6 +17,7 @@ interface Competition {
   provenance_link: string | null;
   format_type: CompetitionFormat;
   is_remote: boolean | null;
+  organizer: string | null;
 }
 
 const FORMAT_LABELS: Record<CompetitionFormat, string> = {
@@ -31,10 +33,17 @@ function generateJsonLd(c: Competition) {
     name: c.title,
     description: `${c.title} is a ${FORMAT_LABELS[c.format_type]} in ${c.venue_location} on ${c.exhibition_date}`,
     location: {
-      "@type": "Place",
-      name: c.venue_location,
+      "@type": c.is_remote ? "VirtualLocation" : "Place",
+      ...(c.is_remote ? { url: c.provenance_link || "" } : { name: c.venue_location }),
     },
     startDate: c.exhibition_date,
+    eventStatus: "https://schema.org/EventScheduled",
+    eventAttendanceMode: c.is_remote
+      ? "https://schema.org/OnlineEventAttendanceMode"
+      : "https://schema.org/OfflineEventAttendanceMode",
+    ...(c.organizer
+      ? { organizer: { "@type": "Organization", name: c.organizer } }
+      : {}),
     offers: {
       "@type": "Offer",
       description: `Prize pool: ${c.reward_pool}`,
@@ -61,20 +70,21 @@ const Index = () => {
   const { data: competitions = [], isLoading } = useQuery({
     queryKey: ["public-competitions"],
     queryFn: async () => {
-      // Only show competitions more than 1 week away
       const cutoff = new Date();
       cutoff.setDate(cutoff.getDate() + 7);
       const cutoffStr = cutoff.toISOString().split("T")[0];
 
       const { data, error } = await supabase
         .from("competitions")
-        .select("id, title, exhibition_date, reward_pool, patron_entities, venue_location, provenance_link, format_type, is_remote")
+        .select("id, title, exhibition_date, reward_pool, patron_entities, venue_location, provenance_link, format_type, is_remote, organizer")
         .eq("status", "published")
         .gt("exhibition_date", cutoffStr)
         .order("exhibition_date", { ascending: true });
       if (error) throw error;
       return (data ?? []) as Competition[];
     },
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 
   const filtered = competitions.filter((c) => {
