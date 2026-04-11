@@ -10,6 +10,7 @@ type CompetitionFormat = "hackathon" | "buildathon" | "innovation_challenge";
 interface Competition {
   id: string;
   title: string;
+  slug: string;
   exhibition_date: string;
   reward_pool: string;
   patron_entities: string[] | null;
@@ -76,7 +77,7 @@ const Index = () => {
 
       const { data, error } = await supabase
         .from("competitions")
-        .select("id, title, exhibition_date, reward_pool, patron_entities, venue_location, provenance_link, format_type, is_remote, organizer")
+        .select("id, title, slug, exhibition_date, reward_pool, patron_entities, venue_location, provenance_link, format_type, is_remote, organizer")
         .eq("status", "published")
         .gt("exhibition_date", cutoffStr)
         .order("exhibition_date", { ascending: true });
@@ -248,7 +249,7 @@ const CompetitionCard = ({ competition }: { competition: Competition }) => {
 
         <div className="pt-2">
           <Link
-            to={`/competition/${competition.id}`}
+            to={`/competition/${competition.slug}`}
             className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-[13px] font-medium text-primary-foreground transition-all hover:opacity-80 active:scale-[0.97]"
           >
             View details
