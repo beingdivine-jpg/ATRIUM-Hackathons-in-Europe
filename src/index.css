@@ -74,11 +74,39 @@
     transition: filter 0.6s ease;
   }
 
+  /* Atrium Loader — pulsing neon green line */
+  .atrium-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: hsl(160 82% 35%);
+    animation: atrium-pulse 1.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    z-index: 9999;
+  }
+
+  @keyframes atrium-pulse {
+    0%, 100% { opacity: 0.3; transform: scaleX(0.6); transform-origin: left; }
+    50% { opacity: 1; transform: scaleX(1); transform-origin: left; }
+  }
+
+  /* Prevent white flash on page transitions */
+  html {
+    background-color: hsl(0 0% 13%);
+  }
+
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
+    letter-spacing: -0.01em;
+  }
+
+  /* Global typography: tracking-tight on all text */
+  h1, h2, h3, h4, h5, h6, p, span, a, button, label, input, textarea, select, td, th, li {
+    letter-spacing: -0.015em;
   }
 }

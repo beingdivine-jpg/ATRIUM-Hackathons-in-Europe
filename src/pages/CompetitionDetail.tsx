@@ -211,8 +211,8 @@ const CompetitionDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" aria-label="Loading" />
+      <div className="min-h-screen bg-background">
+        <div className="atrium-loader" />
       </div>
     );
   }
