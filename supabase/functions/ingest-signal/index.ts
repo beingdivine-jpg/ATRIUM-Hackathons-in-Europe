@@ -7,6 +7,21 @@ const corsHeaders = {
 
 const VALID_FORMATS = ["hackathon", "buildathon", "innovation_challenge"];
 
+function generateSlug(title: string, exhibitionDate: string): string {
+  const year = exhibitionDate.split("-")[0];
+  const base = `${title} ${year}`
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+  const yearSuffix = `-${year}`;
+  if (base.endsWith(`${yearSuffix}${yearSuffix}`)) {
+    return base.slice(0, -yearSuffix.length);
+  }
+  return base;
+}
+
 interface IncomingCompetition {
   title: string;
   exhibition_date: string;
@@ -111,6 +126,7 @@ Deno.serve(async (req) => {
 
       return {
         title: String(item.title).trim(),
+        slug: generateSlug(String(item.title).trim(), String(item.exhibition_date).trim()),
         exhibition_date: String(item.exhibition_date).trim(),
         end_date: item.end_date ? String(item.end_date).trim() : null,
         reward_pool: String(item.reward_pool).trim(),
