@@ -9,6 +9,7 @@ import Entrance from "./pages/Entrance";
 import Vault from "./pages/Vault";
 import NotFound from "./pages/NotFound";
 import BulkUpload from "./pages/BulkUpload";
+import CompetitionDetail from "./pages/CompetitionDetail";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/competition/:id" element={<CompetitionDetail />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/entrance" element={<Entrance />} />
           <Route path="/vault" element={<Vault />} />

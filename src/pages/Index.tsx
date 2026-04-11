@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Search, Calendar, MapPin, ArrowRight } from "lucide-react";
@@ -230,10 +231,13 @@ const CompetitionCard = ({ competition }: { competition: Competition }) => {
 
         {/* Action */}
         <div className="pt-2">
-          <button className="flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-[13px] font-medium text-background transition-all hover:opacity-80 active:scale-[0.97]">
+          <Link
+            to={`/competition/${competition.id}`}
+            className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-[13px] font-medium text-background transition-all hover:opacity-80 active:scale-[0.97]"
+          >
             View details
             <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} />
-          </button>
+          </Link>
         </div>
       </div>
     </article>
