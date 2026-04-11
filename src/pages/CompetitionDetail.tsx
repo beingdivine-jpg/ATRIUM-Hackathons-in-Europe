@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
@@ -68,23 +68,38 @@ function generateDetailJsonLd(c: CompetitionFull) {
 }
 
 const CompetitionDetail = () => {
-  const { id } = useParams<{ id: string }>();
+  const { slug, id } = useParams<{ slug?: string; id?: string }>();
+  const navigate = useNavigate();
+  const identifier = slug || id;
+  const isLegacyId = !!id;
 
   const { data: competition, isLoading, error } = useQuery({
-    queryKey: ['competition', id],
+    queryKey: ['competition', identifier],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from('competitions')
         .select('*')
-        .eq('id', id!)
-        .eq('status', 'published')
-        .single();
+        .eq('status', 'published');
+
+      // Legacy UUID route → lookup by id; slug route → lookup by slug
+      if (isLegacyId) {
+        query = query.eq('id', identifier!);
+      } else {
+        query = query.eq('slug', identifier!);
+      }
+
+      const { data, error } = await query.single();
       if (error) throw error;
-      return data as CompetitionFull;
+      return data as CompetitionFull & { slug: string };
     },
-    enabled: !!id,
+    enabled: !!identifier,
     staleTime: 5 * 60 * 1000,
   });
+
+  // Redirect legacy ID URLs to slug URLs for SEO
+  if (isLegacyId && competition?.slug) {
+    navigate(`/competition/${competition.slug}`, { replace: true });
+  }
 
   if (isLoading) {
     return (
@@ -129,7 +144,7 @@ const CompetitionDetail = () => {
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />
         <meta property="og:type" content="website" />
-        <link rel="canonical" href={`https://atrium.eu/competition/${competition.id}`} />
+        <link rel="canonical" href={`https://atrium.eu/competition/${competition.slug || identifier}`} />
       </Helmet>
 
       {/* JSON-LD */}

@@ -28,6 +28,7 @@ export type Database = {
           patron_entities: Json | null
           provenance_link: string | null
           reward_pool: string
+          slug: string
           source_signal: string | null
           status: Database["public"]["Enums"]["exhibition_status"]
           tags: string[] | null
@@ -48,6 +49,7 @@ export type Database = {
           patron_entities?: Json | null
           provenance_link?: string | null
           reward_pool: string
+          slug: string
           source_signal?: string | null
           status?: Database["public"]["Enums"]["exhibition_status"]
           tags?: string[] | null
@@ -68,6 +70,7 @@ export type Database = {
           patron_entities?: Json | null
           provenance_link?: string | null
           reward_pool?: string
+          slug?: string
           source_signal?: string | null
           status?: Database["public"]["Enums"]["exhibition_status"]
           tags?: string[] | null
