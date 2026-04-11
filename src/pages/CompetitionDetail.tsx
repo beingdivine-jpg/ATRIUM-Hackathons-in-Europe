@@ -25,9 +25,14 @@ interface CompetitionFull {
   organizer: string | null;
   description: string | null;
   editorial_summary: string | null;
+  editorial_summary_fr: string | null;
+  editorial_summary_de: string | null;
+  editorial_summary_es: string | null;
   application_link: string | null;
   tags: string[] | null;
   is_remote: boolean | null;
+  is_recurring: boolean | null;
+  series_slug: string | null;
 }
 
 function generateDetailJsonLd(c: CompetitionFull) {
