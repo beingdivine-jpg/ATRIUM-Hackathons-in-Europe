@@ -13,7 +13,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 7%;
 
-    --primary: 160 82% 35%;
+    --primary: 0 0% 7%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 240 5% 96%;
@@ -30,18 +30,18 @@
 
     --border: 240 6% 90%;
     --input: 240 6% 90%;
-    --ring: 160 82% 35%;
+    --ring: 0 0% 7%;
 
     --radius: 0.75rem;
 
     --sidebar-background: 240 5% 98%;
     --sidebar-foreground: 0 0% 7%;
-    --sidebar-primary: 160 82% 35%;
+    --sidebar-primary: 0 0% 7%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 5% 96%;
     --sidebar-accent-foreground: 240 4% 16%;
     --sidebar-border: 240 6% 90%;
-    --sidebar-ring: 160 82% 35%;
+    --sidebar-ring: 0 0% 7%;
   }
 }
 
@@ -81,7 +81,7 @@
     left: 0;
     right: 0;
     height: 2px;
-    background: hsl(160 82% 35%);
+    background: hsl(0 0% 7%);
     animation: atrium-pulse 1.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     z-index: 9999;
   }
