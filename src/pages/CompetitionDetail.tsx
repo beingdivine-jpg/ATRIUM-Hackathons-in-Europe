@@ -1,11 +1,14 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
 import {
-  ArrowLeft, ExternalLink, Tag, Users, Loader2
+  ArrowLeft, ArrowRight, ExternalLink, Tag, Users, Loader2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { FORMAT_LABELS } from '@/components/CompetitionCard';
+import { getCompetitionWings } from '@/lib/wings';
 
 type CompetitionFormat = 'hackathon' | 'buildathon' | 'innovation_challenge';
 
