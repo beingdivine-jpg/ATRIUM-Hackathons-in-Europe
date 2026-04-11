@@ -45,7 +45,7 @@ export const CompetitionCard = ({ competition }: { competition: Competition }) =
             {competition.venue_location}
           </span>
           <span className="flex items-center gap-1.5 font-semibold text-[#111111]">
-            <Sparkles className="h-[13px] w-[13px] text-[#111111]" strokeWidth={1.4} aria-label="Prize" />
+            <Trophy className="h-[13px] w-[13px] text-[#111111]" strokeWidth={1.4} aria-label="Prize" />
             {competition.reward_pool}
           </span>
         </div>
