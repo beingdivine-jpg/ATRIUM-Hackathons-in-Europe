@@ -95,6 +95,15 @@
     50% { opacity: 1; transform: scaleX(1); transform-origin: left; }
   }
 
+  @keyframes ribbon-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .animate-ribbon {
+    animation: ribbon-scroll 30s linear infinite;
+  }
+
   /* Prevent white flash on page transitions */
   html {
     background-color: hsl(0 0% 100%);
