@@ -20,15 +20,20 @@ export type Database = {
           created_at: string
           description: string | null
           editorial_summary: string | null
+          editorial_summary_de: string | null
+          editorial_summary_es: string | null
+          editorial_summary_fr: string | null
           end_date: string | null
           exhibition_date: string
           format_type: Database["public"]["Enums"]["competition_format"]
           id: string
+          is_recurring: boolean | null
           is_remote: boolean | null
           organizer: string | null
           patron_entities: Json | null
           provenance_link: string | null
           reward_pool: string
+          series_slug: string | null
           slug: string
           source_signal: string | null
           status: Database["public"]["Enums"]["exhibition_status"]
@@ -42,15 +47,20 @@ export type Database = {
           created_at?: string
           description?: string | null
           editorial_summary?: string | null
+          editorial_summary_de?: string | null
+          editorial_summary_es?: string | null
+          editorial_summary_fr?: string | null
           end_date?: string | null
           exhibition_date: string
           format_type?: Database["public"]["Enums"]["competition_format"]
           id?: string
+          is_recurring?: boolean | null
           is_remote?: boolean | null
           organizer?: string | null
           patron_entities?: Json | null
           provenance_link?: string | null
           reward_pool: string
+          series_slug?: string | null
           slug: string
           source_signal?: string | null
           status?: Database["public"]["Enums"]["exhibition_status"]
@@ -64,15 +74,20 @@ export type Database = {
           created_at?: string
           description?: string | null
           editorial_summary?: string | null
+          editorial_summary_de?: string | null
+          editorial_summary_es?: string | null
+          editorial_summary_fr?: string | null
           end_date?: string | null
           exhibition_date?: string
           format_type?: Database["public"]["Enums"]["competition_format"]
           id?: string
+          is_recurring?: boolean | null
           is_remote?: boolean | null
           organizer?: string | null
           patron_entities?: Json | null
           provenance_link?: string | null
           reward_pool?: string
+          series_slug?: string | null
           slug?: string
           source_signal?: string | null
           status?: Database["public"]["Enums"]["exhibition_status"]

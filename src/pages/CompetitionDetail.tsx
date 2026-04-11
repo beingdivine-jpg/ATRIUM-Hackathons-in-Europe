@@ -25,9 +25,14 @@ interface CompetitionFull {
   organizer: string | null;
   description: string | null;
   editorial_summary: string | null;
+  editorial_summary_fr: string | null;
+  editorial_summary_de: string | null;
+  editorial_summary_es: string | null;
   application_link: string | null;
   tags: string[] | null;
   is_remote: boolean | null;
+  is_recurring: boolean | null;
+  series_slug: string | null;
 }
 
 function generateDetailJsonLd(c: CompetitionFull) {
@@ -164,6 +169,26 @@ const CompetitionDetail = () => {
     }
   }, [competition]);
 
+  // Determine if this is a dead one-off (past + not recurring) → noindex for 410 intent
+  const isDeadOneOff = useMemo(() => {
+    if (!competition) return false;
+    return isPast && !competition.is_recurring;
+  }, [competition, isPast]);
+
+  // Determine hreflang availability
+  const hreflangLinks = useMemo(() => {
+    if (!competition) return [];
+    const base = `https://atrium.eu/competition/${competition.slug || identifier}`;
+    const links: { lang: string; href: string }[] = [
+      { lang: 'x-default', href: base },
+      { lang: 'en', href: base },
+    ];
+    if (competition.editorial_summary_fr) links.push({ lang: 'fr', href: `${base}?lang=fr` });
+    if (competition.editorial_summary_de) links.push({ lang: 'de', href: `${base}?lang=de` });
+    if (competition.editorial_summary_es) links.push({ lang: 'es', href: `${base}?lang=es` });
+    return links;
+  }, [competition, identifier]);
+
   // Derive wing links (must be before early returns)
   const wings = useMemo(() => {
     if (!competition) return [];
@@ -244,6 +269,18 @@ const CompetitionDetail = () => {
         <meta property="og:description" content={pageDescription} />
         <meta property="og:type" content="website" />
         <link rel="canonical" href={`https://atrium.eu/competition/${competition.slug || identifier}`} />
+        {/* Hreflang tags for multilingual editions */}
+        {hreflangLinks.map((hl) => (
+          <link key={hl.lang} rel="alternate" hrefLang={hl.lang} href={hl.href} />
+        ))}
+        {/* Smart 410: noindex for dead one-off past events */}
+        {isDeadOneOff && (
+          <meta name="robots" content="noindex, nofollow" />
+        )}
+        {/* Series canonical for recurring events */}
+        {competition.is_recurring && competition.series_slug && (
+          <link rel="alternate" href={`https://atrium.eu/series/${competition.series_slug}`} />
+        )}
         {/* Dynamic SGE / Twitter Summary Tags */}
         <meta name="twitter:label1" content="Prize Pool" />
         <meta name="twitter:data1" content={competition.reward_pool} />
