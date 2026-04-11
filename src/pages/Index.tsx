@@ -80,7 +80,7 @@ const Index = () => {
       const matchFilter = filter === "all" || c.format_type === filter;
       return matchSearch && matchFilter;
     })
-    .sort((a, b) => new Date(b.exhibition_date).getTime() - new Date(a.exhibition_date).getTime());
+    .sort((a, b) => new Date(a.exhibition_date).getTime() - new Date(b.exhibition_date).getTime());
 
   return (
     <div className="min-h-screen bg-background text-foreground">
