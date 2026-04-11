@@ -14,4 +14,3 @@ User-agent: *
 Allow: /
 
 Sitemap: https://drhtaiihbnvcljiyikzt.supabase.co/functions/v1/sitemap
-Allow: /
