@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
 import {
-  ArrowLeft, ArrowRight, ExternalLink, Tag, Users, Loader2
+  ArrowLeft, ArrowRight, ExternalLink, Tag, Users
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { FORMAT_LABELS } from '@/components/CompetitionCard';
