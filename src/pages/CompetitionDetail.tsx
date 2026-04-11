@@ -134,7 +134,7 @@ const CompetitionDetail = () => {
       let query = supabase
         .from('competitions')
         .select('*')
-        .eq('status', 'published');
+        .in('status', ['published', 'archived']);
 
       if (isLegacyId) {
         query = query.eq('id', identifier!);
@@ -144,11 +144,25 @@ const CompetitionDetail = () => {
 
       const { data, error } = await query.single();
       if (error) throw error;
-      return data as CompetitionFull & { slug: string };
+      return data as CompetitionFull & { slug: string; status: string };
     },
     enabled: !!identifier,
     staleTime: 5 * 60 * 1000,
   });
+
+  // Determine if this is a past/archived exhibition
+  const isPast = useMemo(() => {
+    if (!competition) return false;
+    if ((competition as any).status === 'archived') return true;
+    // Also check if end_date or exhibition_date is in the past
+    const refDate = competition.end_date || competition.exhibition_date;
+    if (!refDate) return false;
+    try {
+      return new Date(refDate) < new Date();
+    } catch {
+      return false;
+    }
+  }, [competition]);
 
   // Derive wing links (must be before early returns)
   const wings = useMemo(() => {
@@ -222,7 +236,7 @@ const CompetitionDetail = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className={`min-h-screen bg-background text-foreground ${isPast ? 'past-exhibition' : ''}`}>
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
@@ -267,10 +281,36 @@ const CompetitionDetail = () => {
       </header>
 
       <main className="mx-auto max-w-2xl px-5 pt-8 pb-20">
-        {/* Format badge */}
-        <span className="inline-block rounded-full bg-secondary px-3 py-1 text-[12px] font-medium text-secondary-foreground">
-          {FORMAT_LABELS[competition.format_type]}
-        </span>
+        {/* Status badges */}
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="inline-block rounded-full bg-secondary px-3 py-1 text-[12px] font-medium text-secondary-foreground">
+            {FORMAT_LABELS[competition.format_type]}
+          </span>
+          {isPast && (
+            <span className="inline-block rounded-full border border-muted-foreground/30 px-3 py-1 text-[12px] font-medium text-muted-foreground">
+              Past Exhibition
+            </span>
+          )}
+        </div>
+
+        {/* Evergreen Bridge for archived events */}
+        {isPast && (
+          <div className="mt-4 rounded-2xl border border-border bg-card/60 px-5 py-4">
+            <p className="text-[14px] leading-relaxed text-muted-foreground">
+              This exhibition has concluded.{' '}
+              <Link
+                to={`/city/${competition.venue_location.split(',')[0].trim().toLowerCase().replace(/\s+/g, '-')}`}
+                className="text-primary hover:underline font-medium"
+              >
+                Explore current challenges in {competition.venue_location.split(',')[0].trim()}
+              </Link>{' '}
+              or{' '}
+              <Link to="/" className="text-primary hover:underline font-medium">
+                browse all upcoming exhibitions
+              </Link>.
+            </p>
+          </div>
+        )}
 
         {/* H1 */}
         <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl leading-tight">

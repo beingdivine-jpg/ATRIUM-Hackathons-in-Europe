@@ -64,6 +64,16 @@
     padding-bottom: env(safe-area-inset-bottom, 8px);
   }
 
+  /* Hall of Fame — archived exhibition treatment */
+  .past-exhibition {
+    filter: saturate(0.4);
+  }
+  .past-exhibition:hover,
+  .past-exhibition:focus-within {
+    filter: saturate(0.7);
+    transition: filter 0.6s ease;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
