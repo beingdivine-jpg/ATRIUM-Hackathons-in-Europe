@@ -150,6 +150,22 @@ const CompetitionDetail = () => {
     staleTime: 5 * 60 * 1000,
   });
 
+  // Derive wing links (must be before early returns)
+  const wings = useMemo(() => {
+    if (!competition) return [];
+    const tagWings = getCompetitionWings(competition.tags, competition.title);
+    const formatWing = {
+      label: `The ${FORMAT_LABELS[competition.format_type]} Wing`,
+      path: `/wing/${competition.format_type}`,
+    };
+    const city = competition.venue_location.split(",")[0].trim().toLowerCase().replace(/\s+/g, "-");
+    const cityWing = {
+      label: `Explore ${competition.venue_location.split(",")[0].trim()}`,
+      path: `/city/${city}`,
+    };
+    return [formatWing, cityWing, ...tagWings];
+  }, [competition]);
+
   if (isLegacyId && competition?.slug) {
     navigate(`/competition/${competition.slug}`, { replace: true });
   }
@@ -194,47 +210,14 @@ const CompetitionDetail = () => {
     ? competition.tags.slice(0, 4).join(' · ')
     : '—';
 
-  // Derive wing links for internal linking
-  const wings = useMemo(() => {
-    const tagWings = getCompetitionWings(competition.tags, competition.title);
-    // Always include the format wing
-    const formatWing = {
-      label: `The ${FORMAT_LABELS[competition.format_type]} Wing`,
-      path: `/wing/${competition.format_type}`,
-    };
-    // City wing
-    const city = competition.venue_location.split(",")[0].trim().toLowerCase().replace(/\s+/g, "-");
-    const cityWing = {
-      label: `Explore ${competition.venue_location.split(",")[0].trim()}`,
-      path: `/city/${city}`,
-    };
-    return [formatWing, cityWing, ...tagWings];
-  }, [competition]);
-
-  // Breadcrumb: pick the first tag wing or fall back to format wing
   const parentWing = wings[0];
   const breadcrumbJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: 'Home',
-        item: 'https://atrium.eu/',
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: parentWing.label,
-        item: `https://atrium.eu${parentWing.path}`,
-      },
-      {
-        '@type': 'ListItem',
-        position: 3,
-        name: competition.title,
-        item: `https://atrium.eu/competition/${competition.slug || identifier}`,
-      },
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://atrium.eu/' },
+      { '@type': 'ListItem', position: 2, name: parentWing?.label || 'Gallery', item: `https://atrium.eu${parentWing?.path || '/'}` },
+      { '@type': 'ListItem', position: 3, name: competition.title, item: `https://atrium.eu/competition/${competition.slug || identifier}` },
     ],
   };
 
