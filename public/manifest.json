@@ -1,0 +1,22 @@
+{
+  "name": "Atrium Europe",
+  "short_name": "Atrium",
+  "description": "The curated directory of elite hackathons, buildathons, and innovation challenges across Europe.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#212121",
+  "theme_color": "#10A37F",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
