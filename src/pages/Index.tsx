@@ -130,23 +130,24 @@ const Index = () => {
 
       {/* Hero */}
       <section className="relative flex min-h-[55vh] sm:min-h-[65vh] flex-col items-center justify-center px-6 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-muted/40 to-transparent pointer-events-none" />
+        {/* Subtle grey wash — no hue, pure depth */}
+        <div className="absolute inset-0 bg-gradient-to-b from-zinc-100/50 via-transparent to-zinc-50/20 pointer-events-none" />
         
-        <h1 className="z-10 text-center text-[2.75rem] font-extrabold leading-[1.05] tracking-tighter text-foreground sm:text-7xl lg:text-8xl">
+        <h1 className="z-10 text-center text-[2.75rem] font-extrabold leading-[1.05] tracking-[-0.04em] text-[#111111] sm:text-7xl lg:text-8xl">
           Build Europe.
         </h1>
-        <p className="z-10 mt-5 max-w-lg text-center text-[17px] leading-relaxed text-muted-foreground">
+        <p className="z-10 mt-5 max-w-lg text-center text-[17px] leading-relaxed text-[#52525B]">
           The curated directory of hackathons, buildathons, and innovation challenges across Europe.
         </p>
         <div className="z-10 mt-10 w-full max-w-lg">
-          <div className="flex items-center gap-3 rounded-full border border-border bg-card/50 px-5 py-3.5 backdrop-blur-xl transition-all focus-within:border-foreground/20 focus-within:shadow-sm">
-            <Search className="h-[18px] w-[18px] shrink-0 text-muted-foreground" strokeWidth={2} aria-label="Search" />
+          <div className="flex items-center gap-3 rounded-full border border-[#E4E4E7] bg-white/80 px-5 py-3.5 backdrop-blur-xl transition-all focus-within:border-[#111111]/20 focus-within:shadow-sm shadow-sm shadow-zinc-200/40">
+            <Search className="h-[18px] w-[18px] shrink-0 text-[#52525B]" strokeWidth={1.5} aria-label="Search" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by city or type..."
-              className="w-full bg-transparent text-[15px] text-foreground placeholder:text-muted-foreground/60 outline-none"
+              className="w-full bg-transparent text-[15px] text-[#111111] placeholder:text-[#52525B]/50 outline-none"
             />
           </div>
         </div>
@@ -172,7 +173,7 @@ const Index = () => {
 
       {/* Filter Bar */}
       <nav className="fixed bottom-6 sm:bottom-8 left-1/2 z-50 -translate-x-1/2" aria-label="Filter competitions">
-        <div className="flex items-center rounded-full border border-[#F1F1F4] bg-white/90 px-1 py-1 shadow-xl shadow-zinc-200/50 backdrop-blur-md">
+        <div className="flex items-center rounded-full border border-[#E4E4E7] bg-white/95 px-1 py-1 shadow-xl shadow-zinc-300/30 backdrop-blur-xl">
           {([
             { key: "onsite" as Filter, label: "Onsite" },
             { key: "online" as Filter, label: "Online" },
@@ -182,8 +183,8 @@ const Index = () => {
               onClick={() => setFilter(key)}
               className={`rounded-full px-5 sm:px-7 py-2 text-[13px] font-medium transition-all ${
                 filter === key
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "bg-[#111111] text-white shadow-sm"
+                  : "text-[#52525B] hover:text-[#111111]"
               }`}
             >
               {label}
