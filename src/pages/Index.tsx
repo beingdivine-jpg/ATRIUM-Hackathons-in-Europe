@@ -1,32 +1,10 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, Calendar, MapPin, ArrowRight } from "lucide-react";
-
-type CompetitionFormat = "hackathon" | "buildathon" | "innovation_challenge";
-
-interface Competition {
-  id: string;
-  title: string;
-  slug: string;
-  exhibition_date: string;
-  reward_pool: string;
-  patron_entities: string[] | null;
-  venue_location: string;
-  provenance_link: string | null;
-  format_type: CompetitionFormat;
-  is_remote: boolean | null;
-  organizer: string | null;
-  editorial_summary: string | null;
-}
-
-const FORMAT_LABELS: Record<CompetitionFormat, string> = {
-  hackathon: "Hackathon",
-  buildathon: "Buildathon",
-  innovation_challenge: "Innovation Challenge",
-};
+import { Search } from "lucide-react";
+import { CompetitionCard, FORMAT_LABELS, type Competition, type CompetitionFormat } from "@/components/CompetitionCard";
 
 function generateJsonLd(c: Competition) {
   return {
