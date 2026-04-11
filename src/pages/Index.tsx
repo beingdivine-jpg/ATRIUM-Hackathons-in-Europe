@@ -155,7 +155,7 @@ const Index = () => {
       </section>
 
       {/* Patron Ribbon */}
-      <PatronRibbon competitions={competitions} />
+      <PatronRibbon />
 
       {/* Gallery */}
       <section className="mx-auto max-w-3xl px-5 pb-28 sm:pb-32 pt-2">
