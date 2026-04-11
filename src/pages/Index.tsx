@@ -61,28 +61,32 @@ const Index = () => {
   const { data: competitions = [], isLoading } = useQuery({
     queryKey: ["public-competitions"],
     queryFn: async () => {
+      // Only show competitions more than 1 week away
+      const cutoff = new Date();
+      cutoff.setDate(cutoff.getDate() + 7);
+      const cutoffStr = cutoff.toISOString().split("T")[0];
+
       const { data, error } = await supabase
         .from("competitions")
         .select("id, title, exhibition_date, reward_pool, patron_entities, venue_location, provenance_link, format_type, is_remote")
         .eq("status", "published")
-        .order("created_at", { ascending: false });
+        .gt("exhibition_date", cutoffStr)
+        .order("exhibition_date", { ascending: true });
       if (error) throw error;
       return (data ?? []) as Competition[];
     },
   });
 
-  const filtered = competitions
-    .filter((c) => {
-      const matchSearch =
-        !search ||
-        c.title.toLowerCase().includes(search.toLowerCase()) ||
-        c.venue_location.toLowerCase().includes(search.toLowerCase()) ||
-        FORMAT_LABELS[c.format_type].toLowerCase().includes(search.toLowerCase());
-      const isOnline = c.is_remote === true;
-      const matchFilter = filter === "online" ? isOnline : !isOnline;
-      return matchSearch && matchFilter;
-    })
-    .sort((a, b) => new Date(a.exhibition_date).getTime() - new Date(b.exhibition_date).getTime());
+  const filtered = competitions.filter((c) => {
+    const matchSearch =
+      !search ||
+      c.title.toLowerCase().includes(search.toLowerCase()) ||
+      c.venue_location.toLowerCase().includes(search.toLowerCase()) ||
+      FORMAT_LABELS[c.format_type].toLowerCase().includes(search.toLowerCase());
+    const isOnline = c.is_remote === true;
+    const matchFilter = filter === "online" ? isOnline : !isOnline;
+    return matchSearch && matchFilter;
+  });
 
   return (
     <div className="min-h-screen bg-background text-foreground">
