@@ -242,6 +242,7 @@ const CompetitionCard = ({ competition }: { competition: Competition }) => {
           </p>
         )}
 
+        <div className="flex flex-wrap items-center gap-2 pt-1">
           <span className="rounded-full bg-secondary px-3 py-1 text-[12px] font-medium text-secondary-foreground">
             {FORMAT_LABELS[competition.format_type]}
           </span>
