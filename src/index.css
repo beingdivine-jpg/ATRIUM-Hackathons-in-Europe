@@ -50,6 +50,10 @@
     @apply border-border;
   }
 
+  ::selection {
+    background: hsl(0 0% 7% / 0.08);
+  }
+
   .visually-hidden {
     clip: rect(0 0 0 0);
     clip-path: inset(50%);
@@ -74,7 +78,7 @@
     transition: filter 0.6s ease;
   }
 
-  /* Atrium Loader — pulsing neon green line */
+  /* Atrium Loader — pulsing line */
   .atrium-loader {
     position: fixed;
     top: 0;
