@@ -144,7 +144,7 @@ const CompetitionDetail = () => {
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />
         <meta property="og:type" content="website" />
-        <link rel="canonical" href={`https://atrium.eu/competition/${competition.id}`} />
+        <link rel="canonical" href={`https://atrium.eu/competition/${competition.slug || identifier}`} />
       </Helmet>
 
       {/* JSON-LD */}
