@@ -129,7 +129,8 @@ const Index = () => {
       </div>
 
       {/* Hero */}
-      <section className="relative flex min-h-[55vh] sm:min-h-[65vh] flex-col items-center justify-center px-6">
+      <section className="relative flex min-h-[55vh] sm:min-h-[65vh] flex-col items-center justify-center px-6 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-emerald-50/50 to-transparent pointer-events-none" />
         
         <h1 className="z-10 text-center text-[2.75rem] font-extrabold leading-[1.05] tracking-tighter text-foreground sm:text-7xl lg:text-8xl">
           Build Europe.
@@ -171,7 +172,7 @@ const Index = () => {
 
       {/* Filter Bar */}
       <nav className="fixed bottom-6 sm:bottom-8 left-1/2 z-50 -translate-x-1/2" aria-label="Filter competitions">
-        <div className="flex items-center rounded-full border border-border bg-card/80 px-1 py-1 shadow-2xl backdrop-blur-2xl">
+        <div className="flex items-center rounded-full border border-[#F1F1F4] bg-white/90 px-1 py-1 shadow-xl shadow-zinc-200/50 backdrop-blur-md">
           {([
             { key: "onsite" as Filter, label: "Onsite" },
             { key: "online" as Filter, label: "Online" },
