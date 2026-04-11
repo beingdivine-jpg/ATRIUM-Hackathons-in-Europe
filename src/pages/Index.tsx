@@ -77,18 +77,16 @@ const Index = () => {
     },
   });
 
-  const filtered = competitions
-    .filter((c) => {
-      const matchSearch =
-        !search ||
-        c.title.toLowerCase().includes(search.toLowerCase()) ||
-        c.venue_location.toLowerCase().includes(search.toLowerCase()) ||
-        FORMAT_LABELS[c.format_type].toLowerCase().includes(search.toLowerCase());
-      const isOnline = c.is_remote === true;
-      const matchFilter = filter === "online" ? isOnline : !isOnline;
-      return matchSearch && matchFilter;
-    })
-    .sort((a, b) => new Date(a.exhibition_date).getTime() - new Date(b.exhibition_date).getTime());
+  const filtered = competitions.filter((c) => {
+    const matchSearch =
+      !search ||
+      c.title.toLowerCase().includes(search.toLowerCase()) ||
+      c.venue_location.toLowerCase().includes(search.toLowerCase()) ||
+      FORMAT_LABELS[c.format_type].toLowerCase().includes(search.toLowerCase());
+    const isOnline = c.is_remote === true;
+    const matchFilter = filter === "online" ? isOnline : !isOnline;
+    return matchSearch && matchFilter;
+  });
 
   return (
     <div className="min-h-screen bg-background text-foreground">
