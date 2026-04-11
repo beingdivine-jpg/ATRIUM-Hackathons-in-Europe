@@ -169,6 +169,26 @@ const CompetitionDetail = () => {
     }
   }, [competition]);
 
+  // Determine if this is a dead one-off (past + not recurring) → noindex for 410 intent
+  const isDeadOneOff = useMemo(() => {
+    if (!competition) return false;
+    return isPast && !competition.is_recurring;
+  }, [competition, isPast]);
+
+  // Determine hreflang availability
+  const hreflangLinks = useMemo(() => {
+    if (!competition) return [];
+    const base = `https://atrium.eu/competition/${competition.slug || identifier}`;
+    const links: { lang: string; href: string }[] = [
+      { lang: 'x-default', href: base },
+      { lang: 'en', href: base },
+    ];
+    if (competition.editorial_summary_fr) links.push({ lang: 'fr', href: `${base}?lang=fr` });
+    if (competition.editorial_summary_de) links.push({ lang: 'de', href: `${base}?lang=de` });
+    if (competition.editorial_summary_es) links.push({ lang: 'es', href: `${base}?lang=es` });
+    return links;
+  }, [competition, identifier]);
+
   // Derive wing links (must be before early returns)
   const wings = useMemo(() => {
     if (!competition) return [];
