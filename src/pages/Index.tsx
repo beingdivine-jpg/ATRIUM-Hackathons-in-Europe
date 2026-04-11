@@ -100,6 +100,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground antialiased selection:bg-primary/30">
+      <Helmet>
+        <title>Atrium Europe — Elite Hackathons, Buildathons & Innovation Challenges</title>
+        <meta name="description" content="The curated directory of elite hackathons, buildathons, and innovation challenges across Europe. Discover competitions in AI, blockchain, green tech, and more." />
+      </Helmet>
+
       {/* JSON-LD */}
       {filtered.map((c) => (
         <script
