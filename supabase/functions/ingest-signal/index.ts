@@ -29,6 +29,11 @@ function parsePrizeAmount(pool: string): number {
   return parseInt(cleaned, 10) || 0;
 }
 
+function isOnlineLocation(loc: string): boolean {
+  const lower = loc.toLowerCase();
+  return lower.includes("online") || lower.includes("remote") || lower.includes("virtual");
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -98,7 +103,7 @@ Deno.serve(async (req) => {
 
     const rows = newItems.map((item) => {
       const format = VALID_FORMATS.includes(item.format_type ?? "") ? item.format_type! : "hackathon";
-      const isRemote = item.is_remote === true;
+      const isRemote = item.is_remote === true || (!item.is_remote && isOnlineLocation(item.venue_location));
       const prize = parsePrizeAmount(item.reward_pool);
 
       // Prestige filter: remote + <€30k → auto-archive

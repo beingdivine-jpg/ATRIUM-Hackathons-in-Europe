@@ -7,6 +7,11 @@ const corsHeaders = {
 
 const VALID_FORMATS = ["hackathon", "buildathon", "innovation_challenge"];
 
+function isOnlineLocation(loc: string): boolean {
+  const lower = loc.toLowerCase();
+  return lower.includes("online") || lower.includes("remote") || lower.includes("virtual");
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -47,6 +52,7 @@ Deno.serve(async (req) => {
         provenance_link: provenance_link ? String(provenance_link).trim() : null,
         format_type: resolvedFormat,
         status: "pending",
+        is_remote: isOnlineLocation(String(venue_location).trim()),
       })
       .select()
       .single();
