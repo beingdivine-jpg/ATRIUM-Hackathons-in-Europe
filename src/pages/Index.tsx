@@ -155,9 +155,12 @@ const Index = () => {
       <section className="mx-auto max-w-3xl px-5 pb-28 sm:pb-32">
         <div className="flex flex-col gap-5">
           {isLoading ? (
-            <p className="py-20 text-center text-muted-foreground">Loading…</p>
+            <div className="py-20"><div className="atrium-loader" /></div>
           ) : filtered.length === 0 ? (
-            <p className="py-20 text-center text-muted-foreground">No competitions found.</p>
+            <div className="flex flex-col items-center justify-center py-24 text-center">
+              <div className="mb-6 h-px w-16 bg-primary/40" />
+              <p className="text-[15px] font-medium tracking-tight text-muted-foreground">No exhibitions match your search.</p>
+            </div>
           ) : (
             filtered.map((competition) => (
               <CompetitionCard key={competition.id} competition={competition} />
