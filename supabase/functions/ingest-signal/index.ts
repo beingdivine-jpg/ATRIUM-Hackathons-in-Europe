@@ -85,9 +85,9 @@ Deno.serve(async (req) => {
 
     // Validate required fields
     for (const item of items) {
-      if (!item.title || !item.exhibition_date || !item.reward_pool || !item.venue_location || !item.provenance_link || !item.application_link) {
+      if (!item.title || !item.exhibition_date || !item.reward_pool || !item.venue_location || !item.provenance_link) {
         return new Response(
-          JSON.stringify({ error: "Each item requires: title, exhibition_date, reward_pool, venue_location, provenance_link, application_link (must be a direct link to the hackathon page, not a listing platform)" }),
+          JSON.stringify({ error: "Each item requires: title, exhibition_date, reward_pool, venue_location, provenance_link" }),
           { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
@@ -133,7 +133,9 @@ Deno.serve(async (req) => {
         patron_entities: Array.isArray(item.patron_entities) ? item.patron_entities : [],
         venue_location: String(item.venue_location).trim(),
         provenance_link: String(item.provenance_link).trim(),
-        application_link: item.application_link ? String(item.application_link).trim() : null,
+        application_link: item.application_link
+          ? String(item.application_link).trim()
+          : String(item.provenance_link).trim(),
         format_type: format,
         source_signal: item.source_signal ? String(item.source_signal).trim() : "unknown",
         is_remote: isRemote,
